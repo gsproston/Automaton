@@ -11,8 +11,8 @@ public:
 	Map();
 	~Map();
 
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window) const;
 
 private:
-	std::vector<std::vector<Tile*>> tiles;
+	std::vector<std::vector<Tile*>> m_vTiles;
 };

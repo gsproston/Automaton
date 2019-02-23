@@ -5,8 +5,6 @@
 
 #include "Map.h"
 
-#define TILE_SIZE 32
-
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Automaton");
