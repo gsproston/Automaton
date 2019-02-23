@@ -8,7 +8,6 @@ public:
 	Workplace(const int x, const int y) : Structure(x, y) {}
 
 	virtual void draw(sf::RenderWindow& window) const = 0;
-
 	virtual void work() = 0;
 
 private:

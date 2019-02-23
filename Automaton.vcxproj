@@ -21,11 +21,13 @@
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp" />
     <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Structures\Workplace\Tree.cpp" />
     <ClCompile Include="src\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Structures\Structure.h" />
+    <ClInclude Include="src\Structures\Workplace\Tree.h" />
     <ClInclude Include="src\Structures\Workplace\Workplace.h" />
     <ClInclude Include="src\Tile.h" />
   </ItemGroup>
