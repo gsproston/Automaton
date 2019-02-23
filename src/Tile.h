@@ -12,7 +12,5 @@ public:
 	void draw(sf::RenderWindow& window, const int x, const int y) const;
 
 private:
-	int x;
-	int y;
-	int speed;
+	int m_iSpeed;
 };
