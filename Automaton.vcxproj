@@ -25,6 +25,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Structures\Structure.h" />
+    <ClInclude Include="src\Structures\Workplace\Workplace.h" />
     <ClInclude Include="src\Tile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

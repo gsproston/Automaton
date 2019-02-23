@@ -12,6 +12,9 @@
     <Filter Include="Source Files\Structures">
       <UniqueIdentifier>{9e73087d-73f8-48ad-9fcd-70d50df07063}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Structures\Workplace">
+      <UniqueIdentifier>{6728135e-8cc9-4271-8305-daef833f3d74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp">
@@ -30,6 +33,12 @@
     </ClInclude>
     <ClInclude Include="src\Tile.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Structures\Structure.h">
+      <Filter>Source Files\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Structures\Workplace\Workplace.h">
+      <Filter>Source Files\Structures\Workplace</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
