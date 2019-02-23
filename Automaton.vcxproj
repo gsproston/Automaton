@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Automaton.cpp" />
+    <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Tile.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{D57BA882-61E9-4F72-9A9C-7B5AC5331C05}</ProjectGuid>
@@ -158,15 +167,6 @@ copy "C:\SFML-2.5.1\bin\sfml-window-d-2.dll" "$(TargetDir)";</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Tile.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Automaton.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Tile.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

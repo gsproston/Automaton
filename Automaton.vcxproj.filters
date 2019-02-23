@@ -9,24 +9,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Structures">
+      <UniqueIdentifier>{9e73087d-73f8-48ad-9fcd-70d50df07063}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Tile.h">
+    <ClCompile Include="src\Automaton.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
+    </ClCompile>
+    <ClCompile Include="src\Map.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="src\Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Automaton.cpp">
+    <ClInclude Include="src\Map.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
+    </ClInclude>
+    <ClInclude Include="src\Tile.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>
