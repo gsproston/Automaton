@@ -7,10 +7,12 @@
 class Tile
 {
 public:
-	Tile();
+	Tile(const int x, const int y);
 
-	void draw(sf::RenderWindow& window, const int x, const int y) const;
+	void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const;
 
 private:
 	int m_iSpeed;
+	int m_ix;
+	int m_iy;
 };

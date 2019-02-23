@@ -13,7 +13,7 @@ Map::Map()
 		vTmp.clear();
 		for (int j = 0; j <= y / TILE_SIZE; j++)
 		{
-			newTile = new Tile();
+			newTile = new Tile(i, j);
 			vTmp.push_back(newTile);
 		}
 		m_vTiles.push_back(vTmp);
@@ -40,7 +40,7 @@ void Map::draw(sf::RenderWindow& window) const
 	{
 		for (int j = 0; j < m_vTiles[i].size(); j++)
 		{
-			m_vTiles[i][j]->draw(window, i*TILE_SIZE, j*TILE_SIZE);
+			m_vTiles[i][j]->draw(window, 0, 0);
 		}
 	}
 }
