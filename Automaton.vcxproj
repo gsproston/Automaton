@@ -128,9 +128,10 @@
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-main-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "C:\SFML-2.5.1\bin\sfml-graphics-d-2.dll" "$(TargetDir)";
-copy "C:\SFML-2.5.1\bin\sfml-system-d-2.dll" "$(TargetDir)";
-copy "C:\SFML-2.5.1\bin\sfml-window-d-2.dll" "$(TargetDir)";</Command>
+      <Command>copy "C:\SFML-2.5.1\bin\sfml-graphics-d-2.dll" "$(TargetDir)"
+copy "C:\SFML-2.5.1\bin\sfml-system-d-2.dll" "$(TargetDir)"
+copy "C:\SFML-2.5.1\bin\sfml-window-d-2.dll" "$(TargetDir)"
+xcopy "$(SolutionDir)images" "$(TargetDir)images" /E /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
