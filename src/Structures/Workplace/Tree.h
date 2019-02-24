@@ -5,7 +5,7 @@
 class Tree : public Workplace
 {
 public:
-	Tree(const int x, const int y) : Workplace(x, y) {};
+	Tree(const int x, const int y);
 
 	void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const;
 	void work();

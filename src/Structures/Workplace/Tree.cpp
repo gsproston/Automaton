@@ -2,6 +2,9 @@
 
 #include "Constants.h"
 
+Tree::Tree(const int x, const int y) : Workplace(x, y) {};
+
+
 void Tree::draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const
 {
 	sf::Texture texture;

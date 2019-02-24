@@ -7,6 +7,7 @@
 
 #include "Structures/Structure.h"
 #include "Tile.h"
+#include "Worker.h"
 
 class Map
 {
@@ -18,4 +19,5 @@ public:
 private:
 	std::vector<std::unique_ptr<Structure>> m_vStructures;
 	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
+	std::vector<std::unique_ptr<Worker>> m_vWorkers;
 };

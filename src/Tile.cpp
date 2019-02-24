@@ -3,6 +3,7 @@
 #include "Constants.h"
 
 Tile::Tile(const int x, const int y):
+	m_iSpeed(50),
 	m_ix(x),
 	m_iy(y)
 {}

@@ -28,6 +28,17 @@ Map::Map()
 		m_vStructures.push_back(std::move(tmpTree));
 		count++;
 	}
+
+	// init the workers
+	count = 0;
+	while (count < 30)
+	{
+		int i = rand() % WINDOW_WIDTH;
+		int j = rand() % WINDOW_HEIGHT;
+		std::unique_ptr<Worker> tmpWorker(new Worker(i, j));
+		m_vWorkers.push_back(std::move(tmpWorker));
+		count++;
+	}
 }
 
 void Map::draw(sf::RenderWindow& window) const
@@ -45,5 +56,11 @@ void Map::draw(sf::RenderWindow& window) const
 	for (int i = 0; i < m_vStructures.size(); i++)
 	{
 		m_vStructures[i]->draw(window, 0, 0);
+	}
+
+	// draw all the workers
+	for (int i = 0; i < m_vWorkers.size(); i++)
+	{
+		m_vWorkers[i]->draw(window, 0, 0);
 	}
 }
