@@ -8,6 +8,8 @@
 
 int main()
 {
+	srand(time(0));
+
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
 	Map map;
 
@@ -21,6 +23,7 @@ int main()
 		}
 
 		window.clear();
+		map.tick();
 		map.draw(window);
 		window.display();
 	}

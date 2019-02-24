@@ -35,7 +35,7 @@ Map::Map()
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
-		std::unique_ptr<Worker> tmpWorker(new Worker(i, j));
+		std::unique_ptr<Worker> tmpWorker(new Worker(i, j, *this));
 		m_vWorkers.push_back(std::move(tmpWorker));
 		count++;
 	}
@@ -63,4 +63,54 @@ void Map::draw(sf::RenderWindow& window) const
 	{
 		m_vWorkers[i]->draw(window, 0, 0);
 	}
+}
+
+void Map::tick()
+{
+	// tick all the workers
+	for (int i = 0; i < m_vWorkers.size(); i++)
+	{
+		m_vWorkers[i]->tick();
+	}
+}
+
+
+bool Map::assignWorkplace(Worker& rWorker, const int x, const int y) const
+{
+	Workplace* pWorkplace = getClosestFreeWorkplace(x, y);
+	if (pWorkplace)
+	{
+		rWorker.setWorkplace(pWorkplace);
+		pWorkplace->setWorker(&rWorker);
+		return true;
+	}
+	return false;
+}
+
+Workplace* Map::getClosestFreeWorkplace(const int x, const int y) const
+{
+	int iMinDist = -1;
+	int iTmpDist = -1;
+	Workplace* pWorkplace = nullptr;
+	Workplace* pTmp = nullptr;
+
+	// cycle over all workplaces, returning the closest one
+	for (int i = 0; i < m_vStructures.size(); i++)
+	{
+		pTmp = dynamic_cast<Workplace*>(m_vStructures[i].get());
+		if (pTmp &&
+			pTmp->noWorker())
+		{
+			// we have a workplace, check distance
+			iTmpDist = pTmp->getDistance(x, y);
+			if (iMinDist < 0 ||
+				iMinDist > iTmpDist)
+			{
+				iMinDist = iTmpDist;
+				pWorkplace = pTmp;
+			}
+		}
+	}
+
+	return pWorkplace;
 }

@@ -32,6 +32,12 @@
     <ClCompile Include="src\Worker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Structures\Structure.cpp">
+      <Filter>Source Files\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Structures\Workplace\Workplace.cpp">
+      <Filter>Source Files\Structures\Workplace</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h">

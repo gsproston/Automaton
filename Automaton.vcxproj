@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp" />
     <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Structures\Structure.cpp" />
     <ClCompile Include="src\Structures\Workplace\Tree.cpp" />
+    <ClCompile Include="src\Structures\Workplace\Workplace.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Worker.cpp" />
   </ItemGroup>

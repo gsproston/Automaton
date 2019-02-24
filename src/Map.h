@@ -15,9 +15,14 @@ public:
 	Map();
 
 	void draw(sf::RenderWindow& window) const;
+	void tick();
+
+	bool assignWorkplace(Worker& rWorker, const int x, const int y) const;
 
 private:
 	std::vector<std::unique_ptr<Structure>> m_vStructures;
 	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
 	std::vector<std::unique_ptr<Worker>> m_vWorkers;
+
+	Workplace* getClosestFreeWorkplace(const int x, const int y) const;
 };
