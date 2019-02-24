@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include <SFML/Graphics.hpp>
@@ -11,11 +12,10 @@ class Map
 {
 public:
 	Map();
-	~Map();
 
 	void draw(sf::RenderWindow& window) const;
 
 private:
-	std::vector<Structure*> m_vStructures;
-	std::vector<std::vector<Tile*>> m_vTiles;
+	std::vector<std::unique_ptr<Structure>> m_vStructures;
+	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
 };

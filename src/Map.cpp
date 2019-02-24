@@ -6,18 +6,16 @@
 Map::Map()
 {
 	// init the m_vTiles
-	std::vector<Tile*> vTmp;
-	Tile* newTile = nullptr;
-
+	std::vector<std::unique_ptr<Tile>> vTmp;
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; i++)
 	{
 		vTmp.clear();
 		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; j++)
 		{
-			newTile = new Tile(i, j);
-			vTmp.push_back(newTile);
+			std::unique_ptr<Tile> tmpTile(new Tile(i, j));
+			vTmp.push_back(std::move(tmpTile));
 		}
-		m_vTiles.push_back(vTmp);
+		m_vTiles.push_back(std::move(vTmp));
 	}
 
 	// init the structures
@@ -26,29 +24,9 @@ Map::Map()
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		Tree* tmpTree = new Tree(i, j);
-		m_vStructures.push_back(tmpTree);
+		std::unique_ptr<Tree> tmpTree(new Tree(i, j));
+		m_vStructures.push_back(std::move(tmpTree));
 		count++;
-	}
-}
-
-Map::~Map()
-{
-	// delete everything in the vector
-	for (int i = 0; i < m_vTiles.size(); i++)
-	{
-		for (int j = 0; j < m_vTiles[i].size(); j++)
-		{
-			if (m_vTiles[i][j])
-				delete m_vTiles[i][j];
-		}
-	}
-
-	// delete everything in the vector
-	for (int i = 0; i < m_vStructures.size(); i++)
-	{
-		if (m_vStructures[i])
-			delete m_vStructures[i];
 	}
 }
 
