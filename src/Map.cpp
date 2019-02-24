@@ -1,22 +1,34 @@
 #include "Map.h"
 
+#include "Constants.h"
+#include "Structures/Workplace/Tree.h"
+
 Map::Map()
 {
 	// init the m_vTiles
-	int x = 1280;
-	int y = 720;
 	std::vector<Tile*> vTmp;
 	Tile* newTile = nullptr;
 
-	for (int i = 0; i <= x / TILE_SIZE; i++)
+	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; i++)
 	{
 		vTmp.clear();
-		for (int j = 0; j <= y / TILE_SIZE; j++)
+		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; j++)
 		{
 			newTile = new Tile(i, j);
 			vTmp.push_back(newTile);
 		}
 		m_vTiles.push_back(vTmp);
+	}
+
+	// init the structures
+	int count = 0;
+	while (count < 50)
+	{
+		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
+		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		Tree* tmpTree = new Tree(i, j);
+		m_vStructures.push_back(tmpTree);
+		count++;
 	}
 }
 
@@ -31,6 +43,13 @@ Map::~Map()
 				delete m_vTiles[i][j];
 		}
 	}
+
+	// delete everything in the vector
+	for (int i = 0; i < m_vStructures.size(); i++)
+	{
+		if (m_vStructures[i])
+			delete m_vStructures[i];
+	}
 }
 
 void Map::draw(sf::RenderWindow& window) const
@@ -42,5 +61,11 @@ void Map::draw(sf::RenderWindow& window) const
 		{
 			m_vTiles[i][j]->draw(window, 0, 0);
 		}
+	}
+
+	// draw all the structures
+	for (int i = 0; i < m_vStructures.size(); i++)
+	{
+		m_vStructures[i]->draw(window, 0, 0);
 	}
 }

@@ -25,6 +25,7 @@
     <ClCompile Include="src\Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Structures\Structure.h" />
     <ClInclude Include="src\Structures\Workplace\Tree.h" />
@@ -119,7 +120,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;C:\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

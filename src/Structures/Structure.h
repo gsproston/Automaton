@@ -10,9 +10,9 @@ public:
 		m_iy(y)
 	{}
 
-	virtual void draw(sf::RenderWindow& window) const = 0;
+	virtual void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const = 0;
 
-private:
+protected:
 	int m_ix;
 	int m_iy;
 };

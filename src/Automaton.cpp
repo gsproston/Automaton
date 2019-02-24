@@ -3,11 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Constants.h"
 #include "Map.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "Automaton");
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
 	Map map;
 
 	while (window.isOpen())
