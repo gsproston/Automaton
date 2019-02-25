@@ -7,10 +7,12 @@
 class Structure
 {
 public:
-	Structure(const int x, const int y);
+	Structure(const int iTileX, const int iTileY,
+		const int iTileMapX, const int iTileMapY,
+		const int iHeight, const int iWidth);
+	virtual ~Structure();
 
-	virtual void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const = 0;
-
+	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 	int getDirectionX(const int x) const;
 	int getDirectionY(const int y) const;
 	int getDistance(const int x, const int y) const;
@@ -20,6 +22,10 @@ protected:
 	int getCentreX() const;
 	int getCentreY() const;
 
-	int m_ix;
-	int m_iy;
+	int m_iTileX;
+	int m_iTileY;
+	int m_iTileMapX;
+	int m_iTileMapY;
+	int m_iHeight;
+	int m_iWidth;
 };

@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Structures/Structure.h"
-#include "Tile.h"
+#include "Tiles/Tile.h"
 #include "Worker.h"
 
 class Map
@@ -14,9 +14,10 @@ class Map
 public:
 	Map();
 
-	void draw(sf::RenderWindow& window) const;
 	void tick();
 
+	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
+	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
 	bool assignWorkplace(Worker& rWorker, const int x, const int y) const;
 
 private:

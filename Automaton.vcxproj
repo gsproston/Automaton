@@ -24,7 +24,8 @@
     <ClCompile Include="src\Structures\Structure.cpp" />
     <ClCompile Include="src\Structures\Workplace\Tree.cpp" />
     <ClCompile Include="src\Structures\Workplace\Workplace.cpp" />
-    <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\Tiles\Grass.cpp" />
+    <ClCompile Include="src\Tiles\Tile.cpp" />
     <ClCompile Include="src\Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,7 +34,8 @@
     <ClInclude Include="src\Structures\Structure.h" />
     <ClInclude Include="src\Structures\Workplace\Tree.h" />
     <ClInclude Include="src\Structures\Workplace\Workplace.h" />
-    <ClInclude Include="src\Tile.h" />
+    <ClInclude Include="src\Tiles\Grass.h" />
+    <ClInclude Include="src\Tiles\Tile.h" />
     <ClInclude Include="src\Worker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -8,17 +8,17 @@ class Workplace;
 class Worker
 {
 public:
-	Worker(const int x, const int y, Map& rMap);
+	Worker(const int iMapX, const int iMapY, 
+		Map& rMap);
 
-	void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const;
 	void tick();
 
+	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void setWorkplace(Workplace* pWorkplace);
 
 private:
-	int m_iSpeed;
-	int m_ix;
-	int m_iy;
+	int m_iMapX;
+	int m_iMapY;
 
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;

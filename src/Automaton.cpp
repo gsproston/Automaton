@@ -8,10 +8,14 @@
 
 int main()
 {
-	srand(time(0));
-
-	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
 	Map map;
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
+
+	sf::Texture texture;
+	texture.loadFromFile("images/tileMap.png");
+	sf::RenderStates states;
+	states.texture = &texture;
+	std::vector<sf::Vertex> vVertices;
 
 	while (window.isOpen())
 	{
@@ -24,7 +28,17 @@ int main()
 
 		window.clear();
 		map.tick();
-		map.draw(window);
+
+		// draw all quads
+		map.addQuadVertices(vVertices);
+		window.draw(vVertices.data(), vVertices.size(), sf::PrimitiveType::Quads, states);
+		vVertices.clear();
+
+		// draw all triangles
+		map.addTriangleVertices(vVertices);
+		window.draw(vVertices.data(), vVertices.size(), sf::PrimitiveType::Triangles);
+		vVertices.clear();
+
 		window.display();
 	}
 

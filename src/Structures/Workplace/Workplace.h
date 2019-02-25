@@ -7,9 +7,10 @@ class Worker;
 class Workplace: public Structure
 {
 public:
-	Workplace(const int x, const int y);
+	Workplace(const int iTileX, const int iTileY,
+		const int iTileMapX, const int iTileMapY,
+		const int iHeight, const int iWidth);
 
-	virtual void draw(sf::RenderWindow& window, const int iOffsetX, const int iOffsetY) const = 0;
 	virtual void work() = 0;
 
 	bool noWorker();

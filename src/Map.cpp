@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Structures/Workplace/Tree.h"
+#include "Tiles/Grass.h"
 
 Map::Map()
 {
@@ -12,7 +13,7 @@ Map::Map()
 		vTmp.clear();
 		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; j++)
 		{
-			std::unique_ptr<Tile> tmpTile(new Tile(i, j));
+			std::unique_ptr<Tile> tmpTile(new Grass(i, j));
 			vTmp.push_back(std::move(tmpTile));
 		}
 		m_vTiles.push_back(std::move(vTmp));
@@ -41,30 +42,6 @@ Map::Map()
 	}
 }
 
-void Map::draw(sf::RenderWindow& window) const
-{
-	// draw all the m_vTiles
-	for (int i = 0; i < m_vTiles.size(); i++)
-	{
-		for (int j = 0; j < m_vTiles[i].size(); j++)
-		{
-			m_vTiles[i][j]->draw(window, 0, 0);
-		}
-	}
-
-	// draw all the structures
-	for (int i = 0; i < m_vStructures.size(); i++)
-	{
-		m_vStructures[i]->draw(window, 0, 0);
-	}
-
-	// draw all the workers
-	for (int i = 0; i < m_vWorkers.size(); i++)
-	{
-		m_vWorkers[i]->draw(window, 0, 0);
-	}
-}
-
 void Map::tick()
 {
 	// tick all the workers
@@ -74,6 +51,33 @@ void Map::tick()
 	}
 }
 
+
+void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
+{
+	// add tile vertices
+	for (uint32_t i = 0; i < m_vTiles.size(); ++i)
+	{
+		for (uint32_t j = 0; j < m_vTiles[i].size(); ++j)
+		{
+			m_vTiles[i][j]->addQuadVertices(rvVertices);
+		}
+	}
+
+	// add structure vertices
+	for (uint32_t i = 0; i < m_vStructures.size(); ++i)
+	{
+		m_vStructures[i]->addQuadVertices(rvVertices);
+	}
+}
+
+void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
+{
+	// add worker vertices
+	for (uint32_t i = 0; i < m_vWorkers.size(); ++i)
+	{
+		m_vWorkers[i]->addTriangleVertices(rvVertices);
+	}
+}
 
 bool Map::assignWorkplace(Worker& rWorker, const int x, const int y) const
 {
