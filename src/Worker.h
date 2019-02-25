@@ -8,7 +8,7 @@ class Workplace;
 class Worker
 {
 public:
-	Worker(const int iMapX, const int iMapY, 
+	Worker(const float fMapX, const float fMapY, 
 		Map& rMap);
 
 	void tick();
@@ -17,8 +17,9 @@ public:
 	void setWorkplace(Workplace* pWorkplace);
 
 private:
-	int m_iMapX;
-	int m_iMapY;
+	float m_fMapX;
+	float m_fMapY;
+	float m_fSpeed;
 
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;

@@ -36,10 +36,10 @@ void Structure::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 		sf::Vector2f((float) m_iTileMapX * TILE_SIZE, (float) m_iTileMapY * TILE_SIZE + m_iHeight)));
 }
 
-int Structure::getDirectionX(const int x) const
+int Structure::getDirectionX(const float x) const
 {
 	// convert structure coordinates to centre coords
-	int structx = getCentreX();
+	float structx = getCentreX();
 
 	if (x < structx)
 		return 1;
@@ -48,10 +48,10 @@ int Structure::getDirectionX(const int x) const
 	return 0;
 }
 
-int Structure::getDirectionY(const int y) const
+int Structure::getDirectionY(const float y) const
 {
 	// convert structure coordinates to centre coords
-	int structy = getCentreY();
+	float structy = getCentreY();
 
 	if (y < structy)
 		return 1;
@@ -60,29 +60,29 @@ int Structure::getDirectionY(const int y) const
 	return 0;
 }
 
-int Structure::getDistance(const int x, const int y) const
+float Structure::getDistance(const float x, const float y) const
 {
 	// convert structure coordinates to centre coords
-	int structx = getCentreX();
-	int structy = getCentreY();
+	float structx = getCentreX();
+	float structy = getCentreY();
 
 	return (abs(structx - x) + abs(structy - y));
 }
 
-int Structure::getCentreX() const
+float Structure::getCentreX() const
 {
-	return m_iTileX * TILE_SIZE + TILE_SIZE / 2;
+	return (float) m_iTileX * TILE_SIZE + TILE_SIZE / 2;
 }
 
-int Structure::getCentreY() const
+float Structure::getCentreY() const
 {
-	return m_iTileY * TILE_SIZE + TILE_SIZE / 2;
+	return (float) m_iTileY * TILE_SIZE + TILE_SIZE / 2;
 }
 
 // returns true if the coordinates are close to the structure
-bool Structure::isClose(const int x, const int y) const
+bool Structure::isClose(const float x, const float y) const
 {
-	int dist = pow(abs(getCentreX() - x), 2) + 
+	float dist = pow(abs(getCentreX() - x), 2) + 
 		pow(abs(getCentreY() - y), 2);
 	dist = sqrt(dist);
 

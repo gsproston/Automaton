@@ -13,14 +13,14 @@ public:
 	virtual ~Structure();
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
-	int getDirectionX(const int x) const;
-	int getDirectionY(const int y) const;
-	int getDistance(const int x, const int y) const;
-	bool isClose(const int x, const int y) const;
+	int getDirectionX(const float x) const;
+	int getDirectionY(const float y) const;
+	float getDistance(const float x, const float y) const;
+	bool isClose(const float x, const float y) const;
 
 protected:
-	int getCentreX() const;
-	int getCentreY() const;
+	float getCentreX() const;
+	float getCentreY() const;
 
 	int m_iTileX;
 	int m_iTileY;

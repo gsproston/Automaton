@@ -36,7 +36,7 @@ Map::Map()
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
-		std::unique_ptr<Worker> tmpWorker(new Worker(i, j, *this));
+		std::unique_ptr<Worker> tmpWorker(new Worker((float) i, (float) j, *this));
 		m_vWorkers.push_back(std::move(tmpWorker));
 		++count;
 	}
@@ -79,7 +79,7 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::assignWorkplace(Worker& rWorker, const int x, const int y) const
+bool Map::assignWorkplace(Worker& rWorker, const float x, const float y) const
 {
 	Workplace* pWorkplace = getClosestFreeWorkplace(x, y);
 	if (pWorkplace)
@@ -91,10 +91,10 @@ bool Map::assignWorkplace(Worker& rWorker, const int x, const int y) const
 	return false;
 }
 
-Workplace* Map::getClosestFreeWorkplace(const int x, const int y) const
+Workplace* Map::getClosestFreeWorkplace(const float x, const float y) const
 {
-	int iMinDist = -1;
-	int iTmpDist = -1;
+	float iMinDist = -1;
+	float iTmpDist = -1;
 	Workplace* pWorkplace = nullptr;
 	Workplace* pTmp = nullptr;
 
