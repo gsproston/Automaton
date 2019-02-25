@@ -82,10 +82,9 @@ int Structure::getCentreY() const
 // returns true if the coordinates are close to the structure
 bool Structure::isClose(const int x, const int y) const
 {
-	// convert structure coordinates to centre coords
-	int structx = getCentreX();
-	int structy = getCentreY();
+	int dist = pow(abs(getCentreX() - x), 2) + 
+		pow(abs(getCentreY() - y), 2);
+	dist = sqrt(dist);
 
-	return (abs(structx - x) < TILE_SIZE &&
-		abs(structy - y) < TILE_SIZE);
+	return (dist < TILE_SIZE - 5);
 }

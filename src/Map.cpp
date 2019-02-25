@@ -8,10 +8,10 @@ Map::Map()
 {
 	// init the m_vTiles
 	std::vector<std::unique_ptr<Tile>> vTmp;
-	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; i++)
+	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
 	{
 		vTmp.clear();
-		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; j++)
+		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; ++j)
 		{
 			std::unique_ptr<Tile> tmpTile(new Grass(i, j));
 			vTmp.push_back(std::move(tmpTile));
@@ -27,7 +27,7 @@ Map::Map()
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::unique_ptr<Tree> tmpTree(new Tree(i, j));
 		m_vStructures.push_back(std::move(tmpTree));
-		count++;
+		++count;
 	}
 
 	// init the workers
@@ -38,14 +38,14 @@ Map::Map()
 		int j = rand() % WINDOW_HEIGHT;
 		std::unique_ptr<Worker> tmpWorker(new Worker(i, j, *this));
 		m_vWorkers.push_back(std::move(tmpWorker));
-		count++;
+		++count;
 	}
 }
 
 void Map::tick()
 {
 	// tick all the workers
-	for (int i = 0; i < m_vWorkers.size(); i++)
+	for (int i = 0; i < m_vWorkers.size(); ++i)
 	{
 		m_vWorkers[i]->tick();
 	}
@@ -99,7 +99,7 @@ Workplace* Map::getClosestFreeWorkplace(const int x, const int y) const
 	Workplace* pTmp = nullptr;
 
 	// cycle over all workplaces, returning the closest one
-	for (int i = 0; i < m_vStructures.size(); i++)
+	for (int i = 0; i < m_vStructures.size(); ++i)
 	{
 		pTmp = dynamic_cast<Workplace*>(m_vStructures[i].get());
 		if (pTmp &&
