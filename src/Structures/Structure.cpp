@@ -71,12 +71,12 @@ float Structure::getDistance(const float x, const float y) const
 
 float Structure::getCentreX() const
 {
-	return (float) m_iTileX * TILE_SIZE + TILE_SIZE / 2;
+	return m_iTileX * TILE_SIZE + TILE_SIZE / 2.f;
 }
 
 float Structure::getCentreY() const
 {
-	return (float) m_iTileY * TILE_SIZE + TILE_SIZE / 2;
+	return m_iTileY * TILE_SIZE + TILE_SIZE / 2.f;
 }
 
 // returns true if the coordinates are close to the structure
