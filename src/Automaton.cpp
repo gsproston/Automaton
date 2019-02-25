@@ -17,6 +17,8 @@ int main()
 	states.texture = &texture;
 	std::vector<sf::Vertex> vVertices;
 
+	window.setFramerateLimit(60);
+
 	while (window.isOpen())
 	{
 		sf::Event event;
