@@ -5,15 +5,13 @@
 class Tile
 {
 public:
-	Tile(const int iTileX, const int iTileY,
-		const int iTileMapX, const int iTileMapY);
+	Tile(const sf::Vector2i viTilePos,
+		const sf::Vector2i viTileMapPos);
 	virtual ~Tile();
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 
 private:
-	int m_iTileX;
-	int m_iTileY;
-	int m_iTileMapX;
-	int m_iTileMapY;
+	sf::Vector2i m_viTilePos;
+	sf::Vector2i m_viTileMapPos;
 };

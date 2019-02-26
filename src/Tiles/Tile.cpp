@@ -2,12 +2,10 @@
 
 #include "Constants.h"
 
-Tile::Tile(const int iTileX, const int iTileY,
-	const int iTileMapX, const int iTileMapY):
-	m_iTileX(iTileX),
-	m_iTileY(iTileY),
-	m_iTileMapX(iTileMapX),
-	m_iTileMapY(iTileMapY)
+Tile::Tile(const sf::Vector2i viTilePos,
+	const sf::Vector2i viTileMapPos):
+	m_viTilePos(viTilePos),
+	m_viTileMapPos(viTileMapPos)
 {}
 
 Tile::~Tile() {}
@@ -15,20 +13,24 @@ Tile::~Tile() {}
 
 void Tile::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 {
+	// convert to map positions
+	sf::Vector2f vfMapPos(m_viTilePos * TILE_SIZE);
+	sf::Vector2f vfTileMapPos(m_viTileMapPos * TILE_SIZE);
+
 	// top left
 	rvVertices.push_back(sf::Vertex(
-		sf::Vector2f((float) m_iTileX * TILE_SIZE, (float) m_iTileY * TILE_SIZE),
-		sf::Vector2f((float) m_iTileMapX * TILE_SIZE, (float) m_iTileMapY * TILE_SIZE)));
+		vfMapPos,
+		vfTileMapPos));
 	// top right
 	rvVertices.push_back(sf::Vertex(
-		sf::Vector2f((float) m_iTileX * TILE_SIZE + TILE_SIZE, (float) m_iTileY * TILE_SIZE),
-		sf::Vector2f((float) m_iTileMapX * TILE_SIZE + TILE_SIZE, (float) m_iTileMapY * TILE_SIZE)));
+		vfMapPos + sf::Vector2f(TILE_SIZE, 0),
+		vfTileMapPos + sf::Vector2f(TILE_SIZE, 0)));
 	// bottom right
 	rvVertices.push_back(sf::Vertex(
-		sf::Vector2f((float) m_iTileX * TILE_SIZE + TILE_SIZE, (float) m_iTileY * TILE_SIZE + TILE_SIZE),
-		sf::Vector2f((float) m_iTileMapX * TILE_SIZE + TILE_SIZE, (float) m_iTileMapY * TILE_SIZE + TILE_SIZE)));
+		vfMapPos + sf::Vector2f(TILE_SIZE, TILE_SIZE),
+		vfTileMapPos + sf::Vector2f(TILE_SIZE, TILE_SIZE)));
 	// bottom left
 	rvVertices.push_back(sf::Vertex(
-		sf::Vector2f((float) m_iTileX * TILE_SIZE, (float) m_iTileY * TILE_SIZE + TILE_SIZE),
-		sf::Vector2f((float) m_iTileMapX * TILE_SIZE, (float) m_iTileMapY * TILE_SIZE + TILE_SIZE)));
+		vfMapPos + sf::Vector2f(0, TILE_SIZE),
+		vfTileMapPos + sf::Vector2f(0, TILE_SIZE)));
 }

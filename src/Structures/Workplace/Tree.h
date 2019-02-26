@@ -5,7 +5,7 @@
 class Tree : public Workplace
 {
 public:
-	Tree(const int iTileX, const int iTileY);
+	Tree(const sf::Vector2i viTIlePos);
 
 	void work();
 };

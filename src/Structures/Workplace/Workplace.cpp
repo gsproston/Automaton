@@ -2,12 +2,12 @@
 
 #include "Worker.h"
 
-Workplace::Workplace(const int iTileX, const int iTileY,
-	const int iTileMapX, const int iTileMapY,
-	const int iHeight, const int iWidth):
-	Structure(iTileX, iTileY,
-		iTileMapX, iTileMapY, 
-		iHeight, iWidth),
+Workplace::Workplace(const sf::Vector2i viTilePos,
+	const sf::Vector2i viTileMapPos,
+	const sf::Vector2i viDimensions):
+	Structure(viTilePos,
+		viTileMapPos,
+		viDimensions),
 	m_pWorker(nullptr)
 {}
 

@@ -7,9 +7,9 @@ class Worker;
 class Workplace: public Structure
 {
 public:
-	Workplace(const int iTileX, const int iTileY,
-		const int iTileMapX, const int iTileMapY,
-		const int iHeight, const int iWidth);
+	Workplace(const sf::Vector2i viTilePos,
+		const sf::Vector2i viTileMapPos,
+		const sf::Vector2i viDimensions);
 
 	virtual void work() = 0;
 

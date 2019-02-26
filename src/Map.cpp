@@ -13,7 +13,7 @@ Map::Map()
 		vTmp.clear();
 		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; ++j)
 		{
-			std::unique_ptr<Tile> tmpTile(new Grass(i, j));
+			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
 			vTmp.push_back(std::move(tmpTile));
 		}
 		m_vTiles.push_back(std::move(vTmp));
@@ -25,7 +25,7 @@ Map::Map()
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		std::unique_ptr<Tree> tmpTree(new Tree(i, j));
+		std::unique_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
 		m_vStructures.push_back(std::move(tmpTree));
 		++count;
 	}
@@ -36,7 +36,8 @@ Map::Map()
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
-		std::unique_ptr<Worker> tmpWorker(new Worker((float) i, (float) j, *this));
+		std::unique_ptr<Worker> tmpWorker(
+			new Worker(sf::Vector2f((float) i, (float) j), *this));
 		m_vWorkers.push_back(std::move(tmpWorker));
 		++count;
 	}
@@ -79,9 +80,9 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::assignWorkplace(Worker& rWorker, const float x, const float y) const
+bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const
 {
-	Workplace* pWorkplace = getClosestFreeWorkplace(x, y);
+	Workplace* pWorkplace = getClosestFreeWorkplace(vfMapPos);
 	if (pWorkplace)
 	{
 		rWorker.setWorkplace(pWorkplace);
@@ -91,7 +92,7 @@ bool Map::assignWorkplace(Worker& rWorker, const float x, const float y) const
 	return false;
 }
 
-Workplace* Map::getClosestFreeWorkplace(const float x, const float y) const
+Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
 {
 	float iMinDist = -1;
 	float iTmpDist = -1;
@@ -106,7 +107,7 @@ Workplace* Map::getClosestFreeWorkplace(const float x, const float y) const
 			pTmp->noWorker())
 		{
 			// we have a workplace, check distance
-			iTmpDist = pTmp->getDistance(x, y);
+			iTmpDist = pTmp->getDistance(vfMapPos);
 			if (iMinDist < 0 ||
 				iMinDist > iTmpDist)
 			{

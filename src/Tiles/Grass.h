@@ -5,5 +5,5 @@
 class Grass : public Tile
 {
 public:
-	Grass(const int iTileX, const int iTileY);
+	Grass(const sf::Vector2i viTilePos);
 };

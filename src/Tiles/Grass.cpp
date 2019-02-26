@@ -1,6 +1,6 @@
 #include "Grass.h"
 
-Grass::Grass(const int iTileX, const int iTileY) :
-	Tile(iTileX, iTileY,
-		0, 0)
+Grass::Grass(const sf::Vector2i viTilePos) :
+	Tile(viTilePos,
+		sf::Vector2i(0, 0))
 {}

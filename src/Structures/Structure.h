@@ -7,25 +7,20 @@
 class Structure
 {
 public:
-	Structure(const int iTileX, const int iTileY,
-		const int iTileMapX, const int iTileMapY,
-		const int iHeight, const int iWidth);
+	Structure(const sf::Vector2i viTilePos,
+		const sf::Vector2i viTileMapPos,
+		const sf::Vector2i viDimensions);
 	virtual ~Structure();
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
-	int getDirectionX(const float x) const;
-	int getDirectionY(const float y) const;
-	float getDistance(const float x, const float y) const;
-	bool isClose(const float x, const float y) const;
+	sf::Vector2i getDirection(const sf::Vector2f vfMapPos) const;
+	float getDistance(const sf::Vector2f vfMapPos) const;
+	bool isClose(const sf::Vector2f vfMapPos) const;
 
 protected:
-	float getCentreX() const;
-	float getCentreY() const;
+	sf::Vector2f getCentre() const;
 
-	int m_iTileX;
-	int m_iTileY;
-	int m_iTileMapX;
-	int m_iTileMapY;
-	int m_iHeight;
-	int m_iWidth;
+	sf::Vector2i m_viTilePos;
+	sf::Vector2i m_viTileMapPos;
+	sf::Vector2i m_viDimensions;
 };
