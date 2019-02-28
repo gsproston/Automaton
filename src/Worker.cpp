@@ -18,17 +18,34 @@ void Worker::tick()
 	if (!m_vvfPath.empty())
 	{
 		// we have a path, move towards it
-		auto it = m_vvfPath.end() -1;
-		// check we're not already there
-		if (getDistance(m_vfMapPos, (*it)) < 5)
+		auto itNode = m_vvfPath.end() -1;
+		float fRemainingDist = m_fSpeed;
+		// check if we're in range of the next node
+		float fDist = getDistance(m_vfMapPos, (*itNode));
+
+		while (fDist < fRemainingDist)
 		{
-			m_vvfPath.erase(it);
-			return;
+			// move to the point
+			m_vfMapPos = (*itNode);
+			fRemainingDist -= fDist;
+
+			// get the next point
+			m_vvfPath.erase(itNode);
+			if (m_vvfPath.empty())
+				// we have reached our goal
+				return;
+
+			// otherwise, get the next node
+			itNode = m_vvfPath.end() - 1;
+			fDist = getDistance(m_vfMapPos, (*itNode));
 		}
 
-		sf::Vector2f vfDelta((*it) - m_vfMapPos);
+		sf::Vector2f vfDelta((*itNode) - m_vfMapPos);
 		vfDelta.x = vfDelta.x < 0 ? -1.f : 1.f;
 		vfDelta.y = vfDelta.y < 0 ? -1.f : 1.f;
+
+
+
 		m_vfMapPos += vfDelta * m_fSpeed;
 	}
 	else if (m_pWorkplace)
