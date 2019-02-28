@@ -40,13 +40,9 @@ void Worker::tick()
 			fDist = getDistance(m_vfMapPos, (*itNode));
 		}
 
+		// move towards the position
 		sf::Vector2f vfDelta((*itNode) - m_vfMapPos);
-		vfDelta.x = vfDelta.x < 0 ? -1.f : 1.f;
-		vfDelta.y = vfDelta.y < 0 ? -1.f : 1.f;
-
-
-
-		m_vfMapPos += vfDelta * m_fSpeed;
+		m_vfMapPos += vfDelta * (fRemainingDist / fDist);
 	}
 	else if (m_pWorkplace)
 	{
