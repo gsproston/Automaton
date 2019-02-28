@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Constants.h"
+
 class Tile
 {
 public:
@@ -10,8 +12,15 @@ public:
 	virtual ~Tile();
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
+	sf::Vector2f getCentrePos() const;
+	sf::Vector2i getTilePos() const;
 
 private:
 	sf::Vector2i m_viTilePos;
 	sf::Vector2i m_viTileMapPos;
 };
+
+inline sf::Vector2i convertMapPosToTilePos(sf::Vector2f vfMapPos)
+{
+	return sf::Vector2i(vfMapPos / (float)TILE_SIZE);
+}

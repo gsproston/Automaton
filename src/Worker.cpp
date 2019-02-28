@@ -5,8 +5,8 @@
 
 Worker::Worker(const sf::Vector2f vfMapPos, 
 	Map& rMap):
-	m_vfMapPos(vfMapPos),
 	m_fSpeed(0.25),
+	m_vfMapPos(vfMapPos),
 	m_pWorkplace(nullptr),
 	m_rMap(rMap)
 {}
@@ -14,7 +14,23 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 
 void Worker::tick()
 {
-	if (m_pWorkplace)
+	if (!m_vvfPath.empty())
+	{
+		// we have a path, move towards it
+		auto it = m_vvfPath.end() -1;
+		// check we're not already there
+		if (m_rMap.getDistance(m_vfMapPos, (*it)) < 5)
+		{
+			m_vvfPath.erase(it);
+			return;
+		}
+
+		sf::Vector2f vfDelta((*it) - m_vfMapPos);
+		vfDelta.x = vfDelta.x < 0 ? -1 : 1;
+		vfDelta.y = vfDelta.y < 0 ? -1 : 1;
+		m_vfMapPos += vfDelta * m_fSpeed;
+	}
+	else if (m_pWorkplace)
 	{
 		// we have work, are we close to it?
 		if (m_pWorkplace->isClose(m_vfMapPos))
@@ -24,8 +40,9 @@ void Worker::tick()
 		}
 		else
 		{
-			// we aren't, move towards it
-			m_vfMapPos += sf::Vector2f(m_pWorkplace->getDirection(m_vfMapPos)) * m_fSpeed;
+			// we aren't, and we don't have a path, request one
+			m_vvfPath = m_rMap.getPath(m_vfMapPos, 
+				sf::Vector2f(m_pWorkplace->getTilePos() * TILE_SIZE));
 		}
 	}
 	else

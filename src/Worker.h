@@ -17,8 +17,9 @@ public:
 	void setWorkplace(Workplace* pWorkplace);
 
 private:
-	sf::Vector2f m_vfMapPos;
 	float m_fSpeed;
+	sf::Vector2f m_vfMapPos;
+	std::vector<sf::Vector2f> m_vvfPath;
 
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;

@@ -1,7 +1,5 @@
 #include "Tile.h"
 
-#include "Constants.h"
-
 Tile::Tile(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos):
 	m_viTilePos(viTilePos),
@@ -33,4 +31,15 @@ void Tile::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 	rvVertices.push_back(sf::Vertex(
 		vfMapPos + sf::Vector2f(0, TILE_SIZE),
 		vfTileMapPos + sf::Vector2f(0, TILE_SIZE)));
+}
+
+sf::Vector2f Tile::getCentrePos() const
+{
+	sf::Vector2f vfCentrePos(m_viTilePos * TILE_SIZE);
+	return vfCentrePos + sf::Vector2f(TILE_SIZE / 2.f, TILE_SIZE / 2.f);
+}
+
+sf::Vector2i Tile::getTilePos() const
+{
+	return m_viTilePos;
 }

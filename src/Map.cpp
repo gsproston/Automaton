@@ -1,5 +1,8 @@
 #include "Map.h"
 
+#include <unordered_map>
+#include <unordered_set>
+
 #include "Constants.h"
 #include "Structures/Workplace/Tree.h"
 #include "Tiles/Grass.h"
@@ -21,7 +24,7 @@ Map::Map()
 
 	// init the structures
 	int count = 0;
-	while (count < 50)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -32,7 +35,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 30)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -118,4 +121,148 @@ Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
 	}
 
 	return pWorkplace;
+}
+
+// returns a vector of coordinates to follow to get from source to sink
+std::vector<sf::Vector2f> Map::getPath(
+	const sf::Vector2f vfSource, const sf::Vector2f vfSink) const
+{
+	// The set of nodes already evaluated
+	std::unordered_set<sf::Vector2f> sClosed;
+	// The set of currently discovered nodes that are not evaluated yet
+	std::unordered_set<sf::Vector2f> sOpen = { vfSource };
+
+	// For each node, which node it can most efficiently be reached from.
+	// If a node can be reached from many nodes, umapCameFrom will eventually contain the
+	// most efficient previous step.
+	std::unordered_map<sf::Vector2f, sf::Vector2f> umapCameFrom;
+
+	// For each node, the cost of getting from the start node to that node.
+	std::unordered_map<sf::Vector2f, float> umapGScore;
+	// The cost of going from start to start is zero.
+	umapGScore.insert({ vfSource, 0 });
+
+	// For each node, the total cost of getting from the start node to the goal
+	// by passing by that node. That value is partly known, partly heuristic.
+	std::unordered_map<sf::Vector2f, float> umapFScore;
+
+	// For the first node, that value is completely heuristic.
+	umapFScore.insert({ vfSource, getHeuristic(vfSource, vfSink) });
+
+	while (!sOpen.empty())
+	{
+		// get the node with the lowest score
+		auto openIt = sOpen.begin();
+		float minScore = umapFScore[*sOpen.begin()];
+		for (auto it = sOpen.begin(); it != sOpen.end(); ++it)
+		{
+			float newScore = umapFScore[*it];
+			if (minScore > newScore)
+			{
+				minScore = newScore;
+				openIt = it;
+			}
+		}
+
+		// check if the node is close enough to the end goal
+		sf::Vector2f vfCurrentPos = *openIt;
+		if (getDistance(vfCurrentPos, vfSink) < TILE_SIZE)
+		{
+			std::vector<sf::Vector2f> vvfPath = { vfSink };
+			vvfPath.push_back(vfCurrentPos);
+			while (umapCameFrom.find(vfCurrentPos) != umapCameFrom.end())
+			{
+				vfCurrentPos = umapCameFrom[vfCurrentPos];
+				vvfPath.push_back(vfCurrentPos);
+			}
+			return vvfPath;
+		}
+
+		// add the current tile to the list of evaluated tiles
+		sOpen.erase(openIt);
+		sClosed.insert(vfCurrentPos);
+
+		Tile* pTmpTile = getTile(vfCurrentPos);
+		if (!pTmpTile)
+			continue;
+
+		std::vector<sf::Vector2f> vfNodes = getNeighbouringNodes(pTmpTile->getTilePos());
+		for (auto it = vfNodes.begin(); it != vfNodes.end(); ++it)
+		{
+			if (sClosed.find(*it) != sClosed.end())
+				continue;		// Ignore the neighbor which is already evaluated.
+
+			// The distance from start to a neighbor
+			float fTmpGScore = umapGScore[vfCurrentPos] + 
+				getHeuristic(vfCurrentPos,(*it));
+
+			if (sOpen.find(*it) == sOpen.end())	// Discover a new node
+				sOpen.insert(*it);
+			else if (fTmpGScore >= umapGScore[*it])
+				continue;
+
+			// This path is the best until now. Record it!
+			auto cameIt = umapCameFrom.find(*it);
+			if (cameIt != umapCameFrom.end())
+				(*cameIt).second = vfCurrentPos;
+			else
+				umapCameFrom.insert({ *it, vfCurrentPos });
+			umapGScore[*it] = fTmpGScore;
+			umapFScore[*it] = umapGScore[*it] + 
+				getHeuristic((*it), vfSink);
+		}
+	}
+
+	return {};
+}
+
+// returns a vector of all neighbouring tiles
+std::vector<sf::Vector2f> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
+{
+	std::vector<sf::Vector2f> vfNodes;
+	Tile* pTile;
+
+	for (int8_t i = -1; i <= 1; ++i)
+	{
+		for (int8_t j = -1; j <= 1; ++j)
+		{
+			// exclude the given tile
+			if (i == 0 && j == 0 ||
+				i != 0 && j != 0)
+				continue;
+
+			pTile = getTile(viTilePos + sf::Vector2i(i, j));
+			if (pTile)
+				vfNodes.push_back(pTile->getCentrePos());
+		}
+	}
+
+	return vfNodes;
+}
+
+Tile* Map::getTile(const sf::Vector2f vfMapPos) const
+{
+	return getTile(convertMapPosToTilePos(vfMapPos));
+}
+
+Tile* Map::getTile(const sf::Vector2i viTilePos) const
+{
+	if (viTilePos.x < m_vTiles.size() &&
+		viTilePos.y < m_vTiles[viTilePos.x].size())
+	{
+		return m_vTiles[viTilePos.x][viTilePos.y].get();
+	}
+	return nullptr;
+}
+
+float Map::getDistance(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const
+{
+	return sqrt(pow(abs(vfSource.x - vfDest.x), 2) +
+		pow(abs(vfSource.y - vfDest.y), 2));
+}
+
+float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const
+{
+	// return manhattan distance
+	return abs(vfSource.x - vfDest.x) + abs(vfSource.y - vfDest.y);
 }
