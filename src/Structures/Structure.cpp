@@ -42,3 +42,8 @@ sf::Vector2f Structure::getCentrePos() const
 	sf::Vector2f vfCentrePos(m_viTilePos * TILE_SIZE);
 	return vfCentrePos + sf::Vector2f(TILE_SIZE / 2.f, TILE_SIZE / 2.f);
 }
+
+sf::Vector2i Structure::getTilePos() const
+{
+	return m_viTilePos;
+}

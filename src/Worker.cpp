@@ -56,7 +56,7 @@ void Worker::tick()
 		{
 			// we aren't, and we don't have a path, request one
 			m_vvfPath = m_rMap.getPath(m_vfMapPos, 
-				sf::Vector2f(m_pWorkplace->getCentrePos()));
+				m_pWorkplace->getCentrePos());
 		}
 	}
 	else

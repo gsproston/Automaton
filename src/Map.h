@@ -49,6 +49,7 @@ private:
 	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
 	std::vector<std::unique_ptr<Worker>> m_vWorkers;
 
+	bool addStructure(std::unique_ptr<Structure> pStructure);
 	Workplace* getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const;
 	std::vector<sf::Vector2f> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
 	Tile* getTile(const sf::Vector2f vfMapPos) const;

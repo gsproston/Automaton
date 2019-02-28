@@ -25,18 +25,18 @@ Map::Map()
 
 	// init the structures
 	int count = 0;
-	while (count < 200)
+	while (count < 100)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::unique_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
-		m_vStructures.push_back(std::move(tmpTree));
-		++count;
+		if (addStructure(std::move(tmpTree)))
+			++count;
 	}
 
 	// init the workers
 	count = 0;
-	while (count < 100)
+	while (count < 50)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -73,6 +73,18 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 	{
 		m_vStructures[i]->addQuadVertices(rvVertices);
 	}
+}
+
+bool Map::addStructure(std::unique_ptr<Structure> pStructure)
+{
+	Tile* pTmpTile = getTile(pStructure->getTilePos());
+	if (pTmpTile)
+	{
+		pTmpTile->m_bPassable = false;
+		m_vStructures.push_back(std::move(pStructure));
+		return true;
+	}
+	return false;
 }
 
 void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
@@ -128,26 +140,19 @@ Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
 std::vector<sf::Vector2f> Map::getPath(
 	const sf::Vector2f vfSource, const sf::Vector2f vfSink) const
 {
-	// The set of nodes already evaluated
+	// set of explored nodes
 	std::unordered_set<sf::Vector2f> sClosed;
-	// The set of currently discovered nodes that are not evaluated yet
+	// set of nodes to be explored
 	std::unordered_set<sf::Vector2f> sOpen = { vfSource };
 
-	// For each node, which node it can most efficiently be reached from.
-	// If a node can be reached from many nodes, umapCameFrom will eventually contain the
-	// most efficient previous step.
+	// nodes and their previous nodes
 	std::unordered_map<sf::Vector2f, sf::Vector2f> umapCameFrom;
 
-	// For each node, the cost of getting from the start node to that node.
+	// cost of going from the start node to this node
 	std::unordered_map<sf::Vector2f, float> umapGScore;
-	// The cost of going from start to start is zero.
 	umapGScore.insert({ vfSource, 0 });
-
-	// For each node, the total cost of getting from the start node to the goal
-	// by passing by that node. That value is partly known, partly heuristic.
+	// estimated cost of getting to the goal
 	std::unordered_map<sf::Vector2f, float> umapFScore;
-
-	// For the first node, that value is completely heuristic.
 	umapFScore.insert({ vfSource, getHeuristic(vfSource, vfSink) });
 
 	while (!sOpen.empty())
@@ -167,7 +172,7 @@ std::vector<sf::Vector2f> Map::getPath(
 
 		// check if the node is close enough to the end goal
 		sf::Vector2f vfCurrentPos = *openIt;
-		if (getDistance(vfCurrentPos, vfSink) < TILE_SIZE)
+		if (getDistance(vfCurrentPos, vfSink) <= TILE_SIZE)
 		{
 			std::vector<sf::Vector2f> vvfPath = { vfSink };
 			vvfPath.push_back(vfCurrentPos);
@@ -190,19 +195,22 @@ std::vector<sf::Vector2f> Map::getPath(
 		std::vector<sf::Vector2f> vfNodes = getNeighbouringNodes(pTmpTile->getTilePos());
 		for (auto it = vfNodes.begin(); it != vfNodes.end(); ++it)
 		{
+			// ignore evaluated nodes
 			if (sClosed.find(*it) != sClosed.end())
-				continue;		// Ignore the neighbor which is already evaluated.
+				continue;
 
-			// The distance from start to a neighbor
+			// get the distance from the start node
 			float fTmpGScore = umapGScore[vfCurrentPos] + 
 				getHeuristic(vfCurrentPos,(*it));
 
-			if (sOpen.find(*it) == sOpen.end())	// Discover a new node
+			if (sOpen.find(*it) == sOpen.end())
+				// this node is new
 				sOpen.insert(*it);
 			else if (fTmpGScore >= umapGScore[*it])
+				// this node has a worse score
 				continue;
 
-			// This path is the best until now. Record it!
+			// if we reach here, this node has the best score
 			auto cameIt = umapCameFrom.find(*it);
 			if (cameIt != umapCameFrom.end())
 				(*cameIt).second = vfCurrentPos;
@@ -233,7 +241,7 @@ std::vector<sf::Vector2f> Map::getNeighbouringNodes(const sf::Vector2i viTilePos
 				continue;
 
 			pTile = getTile(viTilePos + sf::Vector2i(i, j));
-			if (pTile)
+			if (pTile && pTile->m_bPassable)
 				vfNodes.push_back(pTile->getCentrePos());
 		}
 	}

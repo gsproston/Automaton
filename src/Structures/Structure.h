@@ -14,6 +14,7 @@ public:
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 	sf::Vector2f getCentrePos() const;
+	sf::Vector2i getTilePos() const;
 
 protected:
 

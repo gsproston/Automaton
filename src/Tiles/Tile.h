@@ -15,6 +15,8 @@ public:
 	sf::Vector2f getCentrePos() const;
 	sf::Vector2i getTilePos() const;
 
+	bool m_bPassable;
+
 private:
 	sf::Vector2i m_viTilePos;
 	sf::Vector2i m_viTileMapPos;

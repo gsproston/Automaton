@@ -2,6 +2,7 @@
 
 Tile::Tile(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos):
+	m_bPassable(true),
 	m_viTilePos(viTilePos),
 	m_viTileMapPos(viTileMapPos)
 {}
