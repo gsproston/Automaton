@@ -78,7 +78,8 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 bool Map::addStructure(std::unique_ptr<Structure> pStructure)
 {
 	Tile* pTmpTile = getTile(pStructure->getTilePos());
-	if (pTmpTile)
+	if (pTmpTile &&
+		pTmpTile->m_bPassable)
 	{
 		pTmpTile->m_bPassable = false;
 		m_vStructures.push_back(std::move(pStructure));
