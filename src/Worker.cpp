@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "Structures/Workplace/Workplace.h"
+#include "Utils/Utils.h"
 
 Worker::Worker(const sf::Vector2f vfMapPos, 
 	Map& rMap):
@@ -19,21 +20,21 @@ void Worker::tick()
 		// we have a path, move towards it
 		auto it = m_vvfPath.end() -1;
 		// check we're not already there
-		if (m_rMap.getDistance(m_vfMapPos, (*it)) < 5)
+		if (getDistance(m_vfMapPos, (*it)) < 5)
 		{
 			m_vvfPath.erase(it);
 			return;
 		}
 
 		sf::Vector2f vfDelta((*it) - m_vfMapPos);
-		vfDelta.x = vfDelta.x < 0 ? -1 : 1;
-		vfDelta.y = vfDelta.y < 0 ? -1 : 1;
+		vfDelta.x = vfDelta.x < 0 ? -1.f : 1.f;
+		vfDelta.y = vfDelta.y < 0 ? -1.f : 1.f;
 		m_vfMapPos += vfDelta * m_fSpeed;
 	}
 	else if (m_pWorkplace)
 	{
 		// we have work, are we close to it?
-		if (m_pWorkplace->isClose(m_vfMapPos))
+		if (getDistance(m_vfMapPos, m_pWorkplace->getCentrePos()) < 5)
 		{
 			// we are! so we can work it
 			m_pWorkplace->work();
@@ -42,7 +43,7 @@ void Worker::tick()
 		{
 			// we aren't, and we don't have a path, request one
 			m_vvfPath = m_rMap.getPath(m_vfMapPos, 
-				sf::Vector2f(m_pWorkplace->getTilePos() * TILE_SIZE));
+				sf::Vector2f(m_pWorkplace->getCentrePos()));
 		}
 	}
 	else

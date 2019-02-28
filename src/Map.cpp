@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "Structures/Workplace/Tree.h"
 #include "Tiles/Grass.h"
+#include "Utils/Utils.h"
 
 Map::Map()
 {
@@ -97,8 +98,8 @@ bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const
 
 Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
 {
-	float iMinDist = -1;
-	float iTmpDist = -1;
+	float fMinDist = -1;
+	float fTmpDist = -1;
 	Workplace* pWorkplace = nullptr;
 	Workplace* pTmp = nullptr;
 
@@ -110,11 +111,11 @@ Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
 			pTmp->noWorker())
 		{
 			// we have a workplace, check distance
-			iTmpDist = pTmp->getDistance(vfMapPos);
-			if (iMinDist < 0 ||
-				iMinDist > iTmpDist)
+			fTmpDist = getDistance(vfMapPos, pTmp->getCentrePos());
+			if (fMinDist < 0 ||
+				fMinDist > fTmpDist)
 			{
-				iMinDist = iTmpDist;
+				fMinDist = fTmpDist;
 				pWorkplace = pTmp;
 			}
 		}
@@ -253,12 +254,6 @@ Tile* Map::getTile(const sf::Vector2i viTilePos) const
 		return m_vTiles[viTilePos.x][viTilePos.y].get();
 	}
 	return nullptr;
-}
-
-float Map::getDistance(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const
-{
-	return sqrt(pow(abs(vfSource.x - vfDest.x), 2) +
-		pow(abs(vfSource.y - vfDest.y), 2));
 }
 
 float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const

@@ -18,6 +18,9 @@
     <Filter Include="Source Files\Tiles">
       <UniqueIdentifier>{6adeb97c-2542-438f-b904-8f3a335d4908}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{9d3bfe12-a180-4f8c-95b8-d74110556a3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp">
@@ -69,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="src\Tiles\Grass.h">
       <Filter>Source Files\Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Utils.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

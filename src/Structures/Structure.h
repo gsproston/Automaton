@@ -13,13 +13,9 @@ public:
 	virtual ~Structure();
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
-	sf::Vector2i getDirection(const sf::Vector2f vfMapPos) const;
-	float getDistance(const sf::Vector2f vfMapPos) const;
-	sf::Vector2i getTilePos() const;
-	bool isClose(const sf::Vector2f vfMapPos) const;
+	sf::Vector2f getCentrePos() const;
 
 protected:
-	sf::Vector2f getCentrePos() const;
 
 	sf::Vector2i m_viTilePos;
 	sf::Vector2i m_viTileMapPos;

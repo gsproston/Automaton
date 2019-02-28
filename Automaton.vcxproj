@@ -36,6 +36,7 @@
     <ClInclude Include="src\Structures\Workplace\Workplace.h" />
     <ClInclude Include="src\Tiles\Grass.h" />
     <ClInclude Include="src\Tiles\Tile.h" />
+    <ClInclude Include="src\Utils\Utils.h" />
     <ClInclude Include="src\Worker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

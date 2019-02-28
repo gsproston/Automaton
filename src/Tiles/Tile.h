@@ -19,8 +19,3 @@ private:
 	sf::Vector2i m_viTilePos;
 	sf::Vector2i m_viTileMapPos;
 };
-
-inline sf::Vector2i convertMapPosToTilePos(sf::Vector2f vfMapPos)
-{
-	return sf::Vector2i(vfMapPos / (float)TILE_SIZE);
-}

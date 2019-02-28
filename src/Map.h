@@ -41,7 +41,6 @@ public:
 	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
 	bool assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const;
 
-	float getDistance(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;
 	std::vector<sf::Vector2f> getPath(const sf::Vector2f vfSource, const sf::Vector2f vfSink) const;
 
