@@ -10,7 +10,16 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 	m_vfMapPos(vfMapPos),
 	m_pWorkplace(nullptr),
 	m_rMap(rMap)
-{}
+{
+	// get a workplace
+	m_rMap.assignWorkplace(*this, m_vfMapPos);
+	// get a path to the workplace
+	if (m_pWorkplace)
+	{
+		m_vvfPath = m_rMap.getPath(m_vfMapPos,
+			m_pWorkplace->getCentrePos());
+	}
+}
 
 
 void Worker::tick()
@@ -52,17 +61,6 @@ void Worker::tick()
 			// we are! so we can work it
 			m_pWorkplace->work();
 		}
-		else
-		{
-			// we aren't, and we don't have a path, request one
-			m_vvfPath = m_rMap.getPath(m_vfMapPos, 
-				m_pWorkplace->getCentrePos());
-		}
-	}
-	else
-	{
-		// request workplace
-		m_rMap.assignWorkplace(*this, m_vfMapPos);
 	}
 }
 
