@@ -194,6 +194,8 @@ std::vector<sf::Vector2f> Map::getPath(
 			continue;
 
 		std::vector<sf::Vector2f> vfNodes = getNeighbouringNodes(pTmpTile->getTilePos());
+		if (vfCurrentPos == vfSource)
+			vfNodes.push_back(pTmpTile->getCentrePos());
 		for (auto it = vfNodes.begin(); it != vfNodes.end(); ++it)
 		{
 			// ignore evaluated nodes
