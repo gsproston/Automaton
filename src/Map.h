@@ -5,9 +5,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Structures/Structure.h"
-#include "Tiles/Tile.h"
-#include "Worker.h"
+#include "Drawables/TileBased/Structures/Structure.h"
+#include "Drawables/TileBased/Tiles/Tile.h"
+#include "Drawables/PointBased/Workers/Worker.h"
 
 namespace std {
 

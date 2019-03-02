@@ -4,8 +4,8 @@
 #include <unordered_set>
 
 #include "Constants.h"
-#include "Structures/Workplace/Tree.h"
-#include "Tiles/Grass.h"
+#include "Drawables/TileBased/Structures/Workplaces/Tree.h"
+#include "Drawables/TileBased/Tiles/Grass.h"
 #include "Utils/Utils.h"
 
 Map::Map()

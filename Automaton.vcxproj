@@ -20,24 +20,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp" />
+    <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Tree.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Tiles\Grass.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Tiles\Tile.cpp" />
     <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\Structures\Structure.cpp" />
-    <ClCompile Include="src\Structures\Workplace\Tree.cpp" />
-    <ClCompile Include="src\Structures\Workplace\Workplace.cpp" />
-    <ClCompile Include="src\Tiles\Grass.cpp" />
-    <ClCompile Include="src\Tiles\Tile.cpp" />
-    <ClCompile Include="src\Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h" />
+    <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h" />
+    <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Tree.h" />
+    <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.h" />
+    <ClInclude Include="src\Drawables\TileBased\Tiles\Grass.h" />
+    <ClInclude Include="src\Drawables\TileBased\Tiles\Tile.h" />
     <ClInclude Include="src\Map.h" />
-    <ClInclude Include="src\Structures\Structure.h" />
-    <ClInclude Include="src\Structures\Workplace\Tree.h" />
-    <ClInclude Include="src\Structures\Workplace\Workplace.h" />
-    <ClInclude Include="src\Tiles\Grass.h" />
-    <ClInclude Include="src\Tiles\Tile.h" />
     <ClInclude Include="src\Utils\Utils.h" />
-    <ClInclude Include="src\Worker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

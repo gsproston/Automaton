@@ -9,17 +9,29 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Structures">
-      <UniqueIdentifier>{9e73087d-73f8-48ad-9fcd-70d50df07063}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Structures\Workplace">
-      <UniqueIdentifier>{6728135e-8cc9-4271-8305-daef833f3d74}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tiles">
-      <UniqueIdentifier>{6adeb97c-2542-438f-b904-8f3a335d4908}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{9d3bfe12-a180-4f8c-95b8-d74110556a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables">
+      <UniqueIdentifier>{67dc9ae1-6f74-4361-8bf4-37f13c2d6dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\TileBased">
+      <UniqueIdentifier>{aaaa7b45-4852-4a55-bcd5-6818355d392e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\PointBased">
+      <UniqueIdentifier>{4a3af3ee-f942-4e9e-a56b-eb7553259c0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\TileBased\Structures">
+      <UniqueIdentifier>{9e73087d-73f8-48ad-9fcd-70d50df07063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\TileBased\Structures\Workplaces">
+      <UniqueIdentifier>{6728135e-8cc9-4271-8305-daef833f3d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\TileBased\Tiles">
+      <UniqueIdentifier>{6adeb97c-2542-438f-b904-8f3a335d4908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables\PointBased\Workers">
+      <UniqueIdentifier>{9b4b7ded-20f4-4a31-afd2-086be6117034}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,52 +41,52 @@
     <ClCompile Include="src\Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Structures\Workplace\Tree.cpp">
-      <Filter>Source Files\Structures\Workplace</Filter>
+    <ClCompile Include="src\Drawables\TileBased\Tiles\Grass.cpp">
+      <Filter>Source Files\Drawables\TileBased\Tiles</Filter>
     </ClCompile>
-    <ClCompile Include="src\Worker.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Drawables\TileBased\Tiles\Tile.cpp">
+      <Filter>Source Files\Drawables\TileBased\Tiles</Filter>
     </ClCompile>
-    <ClCompile Include="src\Structures\Structure.cpp">
-      <Filter>Source Files\Structures</Filter>
+    <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Tree.cpp">
+      <Filter>Source Files\Drawables\TileBased\Structures\Workplaces</Filter>
     </ClCompile>
-    <ClCompile Include="src\Structures\Workplace\Workplace.cpp">
-      <Filter>Source Files\Structures\Workplace</Filter>
+    <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.cpp">
+      <Filter>Source Files\Drawables\TileBased\Structures\Workplaces</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tiles\Tile.cpp">
-      <Filter>Source Files\Tiles</Filter>
+    <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp">
+      <Filter>Source Files\Drawables\TileBased\Structures</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tiles\Grass.cpp">
-      <Filter>Source Files\Tiles</Filter>
+    <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp">
+      <Filter>Source Files\Drawables\PointBased\Workers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structures\Structure.h">
-      <Filter>Source Files\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Structures\Workplace\Workplace.h">
-      <Filter>Source Files\Structures\Workplace</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Structures\Workplace\Tree.h">
-      <Filter>Source Files\Structures\Workplace</Filter>
-    </ClInclude>
     <ClInclude Include="src\Constants.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Worker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tiles\Tile.h">
-      <Filter>Source Files\Tiles</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tiles\Grass.h">
-      <Filter>Source Files\Tiles</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\Utils.h">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Tiles\Grass.h">
+      <Filter>Source Files\Drawables\TileBased\Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Tiles\Tile.h">
+      <Filter>Source Files\Drawables\TileBased\Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Tree.h">
+      <Filter>Source Files\Drawables\TileBased\Structures\Workplaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.h">
+      <Filter>Source Files\Drawables\TileBased\Structures\Workplaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h">
+      <Filter>Source Files\Drawables\TileBased\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h">
+      <Filter>Source Files\Drawables\PointBased\Workers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

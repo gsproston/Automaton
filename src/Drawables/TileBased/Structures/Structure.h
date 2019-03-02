@@ -2,8 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Worker.h"
-
 class Structure
 {
 public:

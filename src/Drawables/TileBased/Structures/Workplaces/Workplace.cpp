@@ -1,6 +1,6 @@
 #include "Workplace.h"
 
-#include "Worker.h"
+#include "Drawables/PointBased/Workers/Worker.h"
 
 Workplace::Workplace(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,

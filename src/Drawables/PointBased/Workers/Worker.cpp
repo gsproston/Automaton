@@ -1,7 +1,7 @@
 #include "Worker.h"
 
 #include "Map.h"
-#include "Structures/Workplace/Workplace.h"
+#include "Drawables/TileBased/Structures/Workplaces/Workplace.h"
 #include "Utils/Utils.h"
 
 Worker::Worker(const sf::Vector2f vfMapPos, 
