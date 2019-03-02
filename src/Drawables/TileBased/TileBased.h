@@ -10,7 +10,7 @@ public:
 		const sf::Vector2i viTileDims);
 	virtual ~TileBased();
 
-	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
+	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 	sf::Vector2f getCentrePos() const;
 	sf::Vector2i getTilePos() const;
 

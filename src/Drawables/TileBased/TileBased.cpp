@@ -13,7 +13,7 @@ TileBased::TileBased(const sf::Vector2i viTilePos,
 TileBased::~TileBased() {}
 
 
-void TileBased::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
+void TileBased::addVertices(std::vector<sf::Vertex>& rvVertices) const
 {
 	// convert to map position
 	sf::Vector2f vfMapPos(m_viTilePos * TILE_SIZE);

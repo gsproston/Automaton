@@ -64,14 +64,14 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 	{
 		for (uint32_t j = 0; j < m_vTiles[i].size(); ++j)
 		{
-			m_vTiles[i][j]->addQuadVertices(rvVertices);
+			m_vTiles[i][j]->addVertices(rvVertices);
 		}
 	}
 
 	// add structure vertices
 	for (uint32_t i = 0; i < m_vStructures.size(); ++i)
 	{
-		m_vStructures[i]->addQuadVertices(rvVertices);
+		m_vStructures[i]->addVertices(rvVertices);
 	}
 }
 
@@ -93,7 +93,7 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	// add worker vertices
 	for (uint32_t i = 0; i < m_vWorkers.size(); ++i)
 	{
-		m_vWorkers[i]->addTriangleVertices(rvVertices);
+		m_vWorkers[i]->addVertices(rvVertices);
 	}
 }
 

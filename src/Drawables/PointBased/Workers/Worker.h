@@ -15,7 +15,7 @@ public:
 
 	void tick();
 
-	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
+	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void setWorkplace(Workplace* pWorkplace);
 
 private:

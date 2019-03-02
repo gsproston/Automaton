@@ -65,7 +65,7 @@ void Worker::tick()
 }
 
 
-void Worker::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
+void Worker::addVertices(std::vector<sf::Vertex>& rvVertices) const
 {
 	static const uint8_t iSize = 2;
 
