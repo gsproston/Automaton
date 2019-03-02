@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp" />
+    <ClCompile Include="src\Drawables\PointBased\PointBased.cpp" />
     <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Tree.cpp" />
@@ -31,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\Drawables\PointBased\PointBased.h" />
     <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Tree.h" />

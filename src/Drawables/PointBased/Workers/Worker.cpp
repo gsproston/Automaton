@@ -6,8 +6,8 @@
 
 Worker::Worker(const sf::Vector2f vfMapPos, 
 	Map& rMap):
+	PointBased(vfMapPos),
 	m_fSpeed(0.25),
-	m_vfMapPos(vfMapPos),
 	m_pWorkplace(nullptr),
 	m_rMap(rMap)
 {

@@ -62,6 +62,9 @@
     <ClCompile Include="src\Drawables\TileBased\TileBased.cpp">
       <Filter>Source Files\Drawables\TileBased</Filter>
     </ClCompile>
+    <ClCompile Include="src\Drawables\PointBased\PointBased.cpp">
+      <Filter>Source Files\Drawables\PointBased</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h">
@@ -93,6 +96,9 @@
     </ClInclude>
     <ClInclude Include="src\Drawables\TileBased\TileBased.h">
       <Filter>Source Files\Drawables\TileBased</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\PointBased\PointBased.h">
+      <Filter>Source Files\Drawables\PointBased</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

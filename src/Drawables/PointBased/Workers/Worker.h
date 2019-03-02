@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Drawables/PointBased/PointBased.h"
+
 class Map;
 class Workplace;
 
-class Worker
+class Worker : public PointBased
 {
 public:
 	Worker(const sf::Vector2f vfMapPos, 
@@ -18,7 +20,6 @@ public:
 
 private:
 	float m_fSpeed;
-	sf::Vector2f m_vfMapPos;
 	std::vector<sf::Vector2f> m_vvfPath;
 
 	// non-owning pointer to workplace
