@@ -11,6 +11,8 @@ Workplace::Workplace(const sf::Vector2i viTilePos,
 	m_pWorker(nullptr)
 {}
 
+Workplace::~Workplace() {}
+
 
 bool Workplace::noWorker()
 {

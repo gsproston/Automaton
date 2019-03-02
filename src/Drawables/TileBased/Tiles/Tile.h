@@ -3,21 +3,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "Constants.h"
+#include "Drawables/TileBased/TileBased.h"
 
-class Tile
+class Tile : public TileBased
 {
 public:
 	Tile(const sf::Vector2i viTilePos,
 		const sf::Vector2i viTileMapPos);
 	virtual ~Tile();
 
-	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
-	sf::Vector2f getCentrePos() const;
-	sf::Vector2i getTilePos() const;
-
 	bool m_bPassable;
-
-private:
-	sf::Vector2i m_viTilePos;
-	sf::Vector2i m_viTileMapPos;
 };

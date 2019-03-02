@@ -24,6 +24,7 @@
     <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Tree.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\TileBased.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Tiles\Grass.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Tiles\Tile.cpp" />
     <ClCompile Include="src\Map.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Tree.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.h" />
+    <ClInclude Include="src\Drawables\TileBased\TileBased.h" />
     <ClInclude Include="src\Drawables\TileBased\Tiles\Grass.h" />
     <ClInclude Include="src\Drawables\TileBased\Tiles\Tile.h" />
     <ClInclude Include="src\Map.h" />

@@ -10,6 +10,7 @@ public:
 	Workplace(const sf::Vector2i viTilePos,
 		const sf::Vector2i viTileMapPos,
 		const sf::Vector2i viDimensions);
+	virtual ~Workplace();
 
 	virtual void work() = 0;
 

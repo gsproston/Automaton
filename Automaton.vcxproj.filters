@@ -59,6 +59,9 @@
     <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp">
       <Filter>Source Files\Drawables\PointBased\Workers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Drawables\TileBased\TileBased.cpp">
+      <Filter>Source Files\Drawables\TileBased</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h">
@@ -87,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h">
       <Filter>Source Files\Drawables\PointBased\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\TileBased.h">
+      <Filter>Source Files\Drawables\TileBased</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
