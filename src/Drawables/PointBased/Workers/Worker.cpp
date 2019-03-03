@@ -30,7 +30,7 @@ void Worker::tick(sf::Time elapsedTime)
 		{
 			// move to the point
 			m_vfMapPos = (*itNode).vfMapPos;
-			fRemainingDist -= fDist;
+			fRemainingDist -= fDist / (*itNode).fSpeedMod;
 
 			// get the next point
 			m_vPath.erase(itNode);

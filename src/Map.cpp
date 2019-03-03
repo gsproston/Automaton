@@ -28,13 +28,14 @@ Map::Map()
 	// put in roads
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
 	{
-		std::unique_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, 5)));
+		const static int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		std::unique_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, j)));
 		addStructure(std::move(tmpRoad));
 	}
 
 	// init the structures
 	int count = 0;
-	while (count < 100)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -45,7 +46,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 100)
+	while (count < 200)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;

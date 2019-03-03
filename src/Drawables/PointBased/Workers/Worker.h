@@ -20,7 +20,7 @@ public:
 	void setWorkplace(Workplace* pWorkplace);
 
 private:
-	float m_fSpeed;
+	float m_fSpeed; // pixels per second
 	std::vector<Node> m_vPath;
 
 	// non-owning pointer to workplace
