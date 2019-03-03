@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "SFML/Graphics.hpp"
 
 class TileBased
@@ -15,7 +17,7 @@ public:
 	sf::Vector2i getTilePos() const;
 
 protected:
+	std::array<sf::Vertex, 4> m_aVertices;
 	sf::Vector2i m_viTilePos;
-	sf::Vector2i m_viTileMapPos;
 	sf::Vector2i m_viTileDims;
 };
