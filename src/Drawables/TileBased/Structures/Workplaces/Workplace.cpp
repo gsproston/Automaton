@@ -7,7 +7,8 @@ Workplace::Workplace(const sf::Vector2i viTilePos,
 	const sf::Vector2i viDimensions):
 	Structure(viTilePos,
 		viTileMapPos,
-		viDimensions),
+		viDimensions,
+		0),
 	m_pWorker(nullptr)
 {}
 

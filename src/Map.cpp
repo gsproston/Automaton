@@ -5,6 +5,7 @@
 #include <unordered_set>
 
 #include "Constants.h"
+#include "Drawables/TileBased/Structures/Road.h"
 #include "Drawables/TileBased/Structures/Workplaces/Tree.h"
 #include "Drawables/TileBased/Tiles/Grass.h"
 #include "Utils/Utils.h"
@@ -24,9 +25,16 @@ Map::Map()
 		m_vTiles.push_back(std::move(vTmp));
 	}
 
+	// put in roads
+	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
+	{
+		std::unique_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, 5)));
+		addStructure(std::move(tmpRoad));
+	}
+
 	// init the structures
 	int count = 0;
-	while (count < 200)
+	while (count < 100)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -37,7 +45,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 200)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -80,9 +88,8 @@ bool Map::addStructure(std::unique_ptr<Structure> pStructure)
 {
 	Tile* pTmpTile = getTile(pStructure->getTilePos());
 	if (pTmpTile &&
-		pTmpTile->m_bPassable)
+		pTmpTile->setStructure(pStructure.get()))
 	{
-		pTmpTile->m_bPassable = false;
 		m_vStructures.push_back(std::move(pStructure));
 		return true;
 	}
@@ -212,7 +219,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 
 			// get the distance from the start node
 			float fTmpGScore = umapGScore[vfCurrentPos] + 
-				getHeuristic(vfCurrentPos,(*it));
+				getDistance(vfCurrentPos,(*it));
 
 			if (sOpen.find(*it) == sOpen.end())
 				// this node is new
@@ -252,7 +259,7 @@ std::vector<sf::Vector2f> Map::getNeighbouringNodes(const sf::Vector2i viTilePos
 				continue;
 
 			pTile = getTile(viTilePos + sf::Vector2i(i, j));
-			if (pTile && pTile->m_bPassable)
+			if (pTile && pTile->getSpeedMod() > 0)
 				vfNodes.push_back(pTile->getCentrePos());
 		}
 	}
