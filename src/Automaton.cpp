@@ -9,6 +9,7 @@
 int main()
 {
 	Map map;
+	sf::Clock clock;
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
 
 	sf::Texture texture;
@@ -27,9 +28,11 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+		
+		sf::Time elapsedTime = clock.restart();
+		map.tick(elapsedTime);
 
 		window.clear();
-		map.tick();
 
 		// draw all quads
 		map.addQuadVertices(vVertices);

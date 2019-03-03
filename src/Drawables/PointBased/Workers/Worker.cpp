@@ -7,7 +7,7 @@
 Worker::Worker(const sf::Vector2f vfMapPos, 
 	Map& rMap):
 	PointBased(vfMapPos),
-	m_fSpeed(0.25),
+	m_fSpeed(32),
 	m_pWorkplace(nullptr),
 	m_rMap(rMap)
 {
@@ -22,13 +22,13 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 }
 
 
-void Worker::tick()
+void Worker::tick(sf::Time elapsedTime)
 {
 	if (!m_vvfPath.empty())
 	{
 		// we have a path, move towards it
 		auto itNode = m_vvfPath.end() -1;
-		float fRemainingDist = m_fSpeed;
+		float fRemainingDist = m_fSpeed * elapsedTime.asSeconds();
 		// check if we're in range of the next node
 		float fDist = getDistance(m_vfMapPos, (*itNode));
 

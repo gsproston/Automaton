@@ -13,7 +13,7 @@ public:
 	Worker(const sf::Vector2f vfMapPos, 
 		Map& rMap);
 
-	void tick();
+	void tick(sf::Time elapsedTime);
 
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void setWorkplace(Workplace* pWorkplace);

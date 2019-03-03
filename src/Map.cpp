@@ -36,7 +36,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 100)
+	while (count < 200)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -47,12 +47,12 @@ Map::Map()
 	}
 }
 
-void Map::tick()
+void Map::tick(sf::Time elapsedTime)
 {
 	// tick all the workers
 	for (int i = 0; i < m_vWorkers.size(); ++i)
 	{
-		m_vWorkers[i]->tick();
+		m_vWorkers[i]->tick(elapsedTime);
 	}
 }
 
