@@ -6,6 +6,7 @@
 
 class Map;
 class Workplace;
+struct Node;
 
 class Worker : public PointBased
 {
@@ -20,7 +21,7 @@ public:
 
 private:
 	float m_fSpeed;
-	std::vector<sf::Vector2f> m_vvfPath;
+	std::vector<Node> m_vPath;
 
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;

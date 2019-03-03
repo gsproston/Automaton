@@ -12,40 +12,40 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 	m_rMap(rMap)
 {
 	// get a workplace
-	m_rMap.assignWorkplace(*this, m_vfMapPos, m_vvfPath);
+	m_rMap.assignWorkplace(*this, m_vfMapPos, m_vPath);
 }
 
 
 void Worker::tick(sf::Time elapsedTime)
 {
-	if (!m_vvfPath.empty())
+	if (!m_vPath.empty())
 	{
 		// we have a path, move towards it
-		auto itNode = m_vvfPath.end() -1;
+		auto itNode = m_vPath.end() -1;
 		float fRemainingDist = m_fSpeed * elapsedTime.asSeconds();
-		// check if we're in range of the next node
-		float fDist = getDistance(m_vfMapPos, (*itNode));
-
-		while (fDist < fRemainingDist)
+		// get the distance to the next node
+		float fDist = getDistance(m_vfMapPos, (*itNode).vfMapPos);
+		
+		while (fDist < fRemainingDist * (*itNode).fSpeedMod)
 		{
 			// move to the point
-			m_vfMapPos = (*itNode);
+			m_vfMapPos = (*itNode).vfMapPos;
 			fRemainingDist -= fDist;
 
 			// get the next point
-			m_vvfPath.erase(itNode);
-			if (m_vvfPath.empty())
+			m_vPath.erase(itNode);
+			if (m_vPath.empty())
 				// we have reached our goal
 				return;
 
 			// otherwise, get the next node
-			itNode = m_vvfPath.end() - 1;
-			fDist = getDistance(m_vfMapPos, (*itNode));
+			itNode = m_vPath.end() - 1;
+			fDist = getDistance(m_vfMapPos, (*itNode).vfMapPos);
 		}
 
 		// move towards the position
-		sf::Vector2f vfDelta((*itNode) - m_vfMapPos);
-		m_vfMapPos += vfDelta * (fRemainingDist / fDist);
+		sf::Vector2f vfDelta((*itNode).vfMapPos - m_vfMapPos);
+		m_vfMapPos += vfDelta * (fRemainingDist / fDist) * (*itNode).fSpeedMod;
 	}
 	else if (m_pWorkplace)
 	{

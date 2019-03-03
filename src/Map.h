@@ -10,22 +10,24 @@
 #include "Drawables/PointBased/Workers/Worker.h"
 
 namespace std {
-
 	template <>
 	struct hash<sf::Vector2f>
 	{
 		std::size_t operator()(const sf::Vector2f& k) const
 		{
-			using std::size_t;
 			using std::hash;
-			using std::string;
-
-			// Compute individual hash values for first,
-			// second and third and combine them using XOR
-			// and bit shifting:
-
 			return ((hash<float>()(k.x)
 				^ (hash<float>()(k.y) << 1)) >> 1);
+		}
+	};
+
+	template<>
+	struct hash<Node>
+	{
+		std::size_t operator()(const Node& k) const
+		{
+			using std::hash;
+			return hash<sf::Vector2f>()(k.vfMapPos);
 		}
 	};
 }
@@ -41,12 +43,12 @@ public:
 	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
 	bool assignWorkplace(Worker& rWorker, 
 		const sf::Vector2f vfMapPos, 
-		std::vector<sf::Vector2f>& rvvfPath) const;
+		std::vector<Node>& rvPath) const;
 
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;
 	bool getPath(const sf::Vector2f vfSource, 
 		const sf::Vector2f vfSink, 
-		std::vector<sf::Vector2f>& rvvfPath) const;
+		std::vector<Node>& rvPath) const;
 
 private:
 	std::vector<std::unique_ptr<Structure>> m_vStructures;
@@ -55,8 +57,8 @@ private:
 
 	bool addStructure(std::unique_ptr<Structure> pStructure);
 	Workplace* getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
-		std::vector<sf::Vector2f>& rvvfPath) const;
-	std::vector<sf::Vector2f> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
+		std::vector<Node>& rvPath) const;
+	std::vector<Node> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
 	Tile* getTile(const sf::Vector2f vfMapPos) const;
 	Tile* getTile(const sf::Vector2i viTilePos) const;
 };
