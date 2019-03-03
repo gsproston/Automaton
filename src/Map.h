@@ -39,10 +39,14 @@ public:
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
-	bool assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const;
+	bool assignWorkplace(Worker& rWorker, 
+		const sf::Vector2f vfMapPos, 
+		std::vector<sf::Vector2f>& rvvfPath) const;
 
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;
-	std::vector<sf::Vector2f> getPath(const sf::Vector2f vfSource, const sf::Vector2f vfSink) const;
+	bool getPath(const sf::Vector2f vfSource, 
+		const sf::Vector2f vfSink, 
+		std::vector<sf::Vector2f>& rvvfPath) const;
 
 private:
 	std::vector<std::unique_ptr<Structure>> m_vStructures;
@@ -50,7 +54,8 @@ private:
 	std::vector<std::unique_ptr<Worker>> m_vWorkers;
 
 	bool addStructure(std::unique_ptr<Structure> pStructure);
-	Workplace* getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const;
+	Workplace* getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
+		std::vector<sf::Vector2f>& rvvfPath) const;
 	std::vector<sf::Vector2f> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
 	Tile* getTile(const sf::Vector2f vfMapPos) const;
 	Tile* getTile(const sf::Vector2i viTilePos) const;

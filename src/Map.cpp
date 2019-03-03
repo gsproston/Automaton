@@ -1,5 +1,6 @@
 #include "Map.h"
 
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -97,9 +98,10 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const
+bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos,
+	std::vector<sf::Vector2f>& rvvfPath) const
 {
-	Workplace* pWorkplace = getClosestFreeWorkplace(vfMapPos);
+	Workplace* pWorkplace = getClosestFreeWorkplace(vfMapPos, rvvfPath);
 	if (pWorkplace)
 	{
 		rWorker.setWorkplace(pWorkplace);
@@ -109,37 +111,42 @@ bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos) const
 	return false;
 }
 
-Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos) const
+// returns the closest workplace to the position that has no worker 
+// also sets the path to this workplace
+Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
+	std::vector<sf::Vector2f>& rvvfPath) const
 {
-	float fMinDist = -1;
-	float fTmpDist = -1;
-	Workplace* pWorkplace = nullptr;
-	Workplace* pTmp = nullptr;
+	// use an ordered map to keep track of the workplaces
+	std::map<float, Workplace*> mWorkplaces;
 
 	// cycle over all workplaces, returning the closest one
 	for (int i = 0; i < m_vStructures.size(); ++i)
 	{
-		pTmp = dynamic_cast<Workplace*>(m_vStructures[i].get());
+		Workplace* pTmp = dynamic_cast<Workplace*>(m_vStructures[i].get());
 		if (pTmp &&
 			pTmp->noWorker())
 		{
 			// we have a workplace, check distance
-			fTmpDist = getDistance(vfMapPos, pTmp->getCentrePos());
-			if (fMinDist < 0 ||
-				fMinDist > fTmpDist)
-			{
-				fMinDist = fTmpDist;
-				pWorkplace = pTmp;
-			}
+			float fTmpDist = getDistance(vfMapPos, pTmp->getCentrePos());
+			// add to the map
+			mWorkplaces.insert({ fTmpDist, pTmp });
 		}
 	}
 
-	return pWorkplace;
+	// iterate over the ordered map, returning the first one with a path to it
+	for (auto it = mWorkplaces.begin(); it != mWorkplaces.end(); ++it)
+	{
+		if (getPath(vfMapPos, (*it).second->getCentrePos(), rvvfPath))
+			return (*it).second;
+	}
+	// if we reach here, we did not find a workplace
+	return nullptr;
 }
 
 // returns a vector of coordinates to follow to get from source to sink
-std::vector<sf::Vector2f> Map::getPath(
-	const sf::Vector2f vfSource, const sf::Vector2f vfSink) const
+bool Map::getPath(const sf::Vector2f vfSource, 
+	const sf::Vector2f vfSink, 
+	std::vector<sf::Vector2f>& rvvfPath) const
 {
 	// set of explored nodes
 	std::unordered_set<sf::Vector2f> sClosed;
@@ -182,7 +189,8 @@ std::vector<sf::Vector2f> Map::getPath(
 				vfCurrentPos = umapCameFrom[vfCurrentPos];
 				vvfPath.push_back(vfCurrentPos);
 			}
-			return vvfPath;
+			rvvfPath = vvfPath;
+			return true;
 		}
 
 		// add the current tile to the list of evaluated tiles
@@ -225,7 +233,7 @@ std::vector<sf::Vector2f> Map::getPath(
 		}
 	}
 
-	return {};
+	return false;
 }
 
 // returns a vector of all neighbouring tiles

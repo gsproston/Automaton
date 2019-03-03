@@ -12,13 +12,7 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 	m_rMap(rMap)
 {
 	// get a workplace
-	m_rMap.assignWorkplace(*this, m_vfMapPos);
-	// get a path to the workplace
-	if (m_pWorkplace)
-	{
-		m_vvfPath = m_rMap.getPath(m_vfMapPos,
-			m_pWorkplace->getCentrePos());
-	}
+	m_rMap.assignWorkplace(*this, m_vfMapPos, m_vvfPath);
 }
 
 
