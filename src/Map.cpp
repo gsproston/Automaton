@@ -13,16 +13,16 @@
 Map::Map()
 {
 	// init the m_vTiles
-	std::vector<std::unique_ptr<Tile>> vTmp;
+	std::vector<std::shared_ptr<Tile>> vTmp;
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
 	{
 		vTmp.clear();
 		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; ++j)
 		{
-			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
-			vTmp.push_back(std::move(tmpTile));
+			std::shared_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
+			vTmp.push_back(tmpTile);
 		}
-		m_vTiles.push_back(std::move(vTmp));
+		m_vTiles.push_back(vTmp);
 	}
 
 	// put in roads
@@ -35,7 +35,7 @@ Map::Map()
 
 	// init the structures
 	int count = 0;
-	while (count < 200)
+	while (count < 1)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -46,7 +46,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 200)
+	while (count < 1)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -87,9 +87,9 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 
 bool Map::addStructure(std::unique_ptr<Structure> pStructure)
 {
-	Tile* pTmpTile = getTile(pStructure->getTilePos());
-	if (pTmpTile &&
-		pTmpTile->setStructure(pStructure.get()))
+	std::shared_ptr<Tile> pCurrentTile = getTile(pStructure->getTilePos());
+	if (pCurrentTile &&
+		pCurrentTile->setStructure(pStructure.get()))
 	{
 		m_vStructures.push_back(std::move(pStructure));
 		return true;
@@ -107,7 +107,7 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 }
 
 bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos,
-	std::vector<Node>& rvPath) const
+	std::vector<std::shared_ptr<Tile>>& rvPath) const
 {
 	Workplace* pWorkplace = getClosestFreeWorkplace(vfMapPos, rvPath);
 	if (pWorkplace)
@@ -122,7 +122,7 @@ bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos,
 // returns the closest workplace to the position that has no worker 
 // also sets the path to this workplace
 Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
-	std::vector<Node>& rvPath) const
+	std::vector<std::shared_ptr<Tile>>& rvPath) const
 {
 	// use an ordered map to keep track of the workplaces
 	std::map<float, Workplace*> mWorkplaces;
@@ -154,25 +154,25 @@ Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
 // returns a vector of coordinates to follow to get from source to sink
 bool Map::getPath(const sf::Vector2f vfSource, 
 	const sf::Vector2f vfSink, 
-	std::vector<Node>& rvPath) const
+	std::vector<std::shared_ptr<Tile>>& rvPath) const
 {
-	Node sourceNode(vfSource, 1);
-	Node sinkNode(vfSink, 1);
+	std::shared_ptr<Tile> pSourceTile = getTile(vfSource);
+	std::shared_ptr<Tile> pSinkTile = getTile(vfSink);
 
 	// set of explored nodes
-	std::unordered_set<Node> sClosed;
+	std::unordered_set<std::shared_ptr<Tile>> sClosed;
 	// set of nodes to be explored
-	std::unordered_set<Node> sOpen = { sourceNode };
+	std::unordered_set<std::shared_ptr<Tile>> sOpen = { pSourceTile };
 
 	// nodes and their previous nodes
-	std::unordered_map<Node, Node> umapCameFrom;
+	std::unordered_map<std::shared_ptr<Tile>, std::shared_ptr<Tile>> umapCameFrom;
 
 	// cost of going from the start node to this node
-	std::unordered_map<Node, float> umapGScore;
-	umapGScore.insert({ sourceNode, 0 });
+	std::unordered_map<std::shared_ptr<Tile>, float> umapGScore;
+	umapGScore.insert({ pSourceTile, 0 });
 	// estimated cost of getting to the goal
-	std::unordered_map<Node, float> umapFScore;
-	umapFScore.insert({ sourceNode, getHeuristic(vfSource, vfSink) });
+	std::unordered_map<std::shared_ptr<Tile>, float> umapFScore;
+	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, vfSink) });
 
 	while (!sOpen.empty())
 	{
@@ -189,20 +189,19 @@ bool Map::getPath(const sf::Vector2f vfSource,
 			}
 		}
 
-		Node currentNode = *openIt;
-		Tile* pTmpTile = getTile(currentNode.vfMapPos);
-		if (!pTmpTile)
+		std::shared_ptr<Tile> pCurrentTile = *openIt;
+		if (!pCurrentTile)
 			continue;
 
 		// check if the node is close enough to the end goal
-		if (getDistance(currentNode.vfMapPos, vfSink) <= TILE_SIZE)
+		if (getDistance(pCurrentTile->getCentrePos(), vfSink) <= TILE_SIZE)
 		{
-			std::vector<Node> vvfPath = { sinkNode };
-			vvfPath.push_back(currentNode);
-			while (umapCameFrom.find(currentNode) != umapCameFrom.end())
+			std::vector<std::shared_ptr<Tile>> vvfPath = { pSinkTile };
+			vvfPath.push_back(pCurrentTile);
+			while (umapCameFrom.find(pCurrentTile) != umapCameFrom.end())
 			{
-				currentNode = umapCameFrom[currentNode];
-				vvfPath.push_back(currentNode);
+				pCurrentTile = umapCameFrom[pCurrentTile];
+				vvfPath.push_back(pCurrentTile);
 			}
 			rvPath = vvfPath;
 			return true;
@@ -210,21 +209,21 @@ bool Map::getPath(const sf::Vector2f vfSource,
 
 		// add the current tile to the list of evaluated tiles
 		sOpen.erase(openIt);
-		sClosed.insert(currentNode);
+		sClosed.insert(pCurrentTile);
 
-		std::vector<Node> vfNodes = getNeighbouringNodes(pTmpTile->getTilePos());
-		if (currentNode.vfMapPos == vfSource)
-			vfNodes.push_back(Node(pTmpTile->getCentrePos(), pTmpTile->getSpeedMod()));
-		for (auto it = vfNodes.begin(); it != vfNodes.end(); ++it)
+		std::vector<std::shared_ptr<Tile>> vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
+		if (pCurrentTile == pSourceTile)
+			vTiles.push_back(pCurrentTile);
+		for (auto it = vTiles.begin(); it != vTiles.end(); ++it)
 		{
 			// ignore evaluated nodes
 			if (sClosed.find(*it) != sClosed.end())
 				continue;
 
 			// get the distance from the start node
-			float fTmpGScore = umapGScore[currentNode] + 
-				getDistance(currentNode.vfMapPos, (*it).vfMapPos) /		// divide by the speed mod
-				((currentNode.fSpeedMod + (*it).fSpeedMod) / 2.f);		// take the average of the two speed mods
+			float fTmpGScore = umapGScore[pCurrentTile] + 
+				getDistance(pCurrentTile->getCentrePos(), (*it)->getCentrePos()) /	// divide by the speed mod
+				((pCurrentTile->getSpeedMod() + (*it)->getSpeedMod()) / 2.f);		// take the average of the two speed mods
 
 			if (sOpen.find(*it) == sOpen.end())
 				// this node is new
@@ -236,12 +235,12 @@ bool Map::getPath(const sf::Vector2f vfSource,
 			// if we reach here, this node has the best score
 			auto cameIt = umapCameFrom.find(*it);
 			if (cameIt != umapCameFrom.end())
-				(*cameIt).second = currentNode;
+				(*cameIt).second = pCurrentTile;
 			else
-				umapCameFrom.insert({ *it, currentNode });
+				umapCameFrom.insert({ *it, pCurrentTile });
 			umapGScore[*it] = fTmpGScore;
 			umapFScore[*it] = umapGScore[*it] + 
-				getHeuristic((*it).vfMapPos, vfSink);
+				getHeuristic((*it)->getCentrePos(), vfSink);
 		}
 	}
 
@@ -249,10 +248,10 @@ bool Map::getPath(const sf::Vector2f vfSource,
 }
 
 // returns a vector of all neighbouring tiles
-std::vector<Node> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
+std::vector<std::shared_ptr<Tile>> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 {
-	std::vector<Node> vfNodes;
-	Tile* pTile;
+	std::vector<std::shared_ptr<Tile>> vTiles;
+	std::shared_ptr<Tile> pTile;
 
 	for (int8_t i = -1; i <= 1; ++i)
 	{
@@ -265,24 +264,24 @@ std::vector<Node> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 
 			pTile = getTile(viTilePos + sf::Vector2i(i, j));
 			if (pTile && pTile->getSpeedMod() > 0)
-				vfNodes.push_back(Node(pTile->getCentrePos(), pTile->getSpeedMod()));
+				vTiles.push_back(pTile);
 		}
 	}
 
-	return vfNodes;
+	return vTiles;
 }
 
-Tile* Map::getTile(const sf::Vector2f vfMapPos) const
+std::shared_ptr<Tile> Map::getTile(const sf::Vector2f vfMapPos) const
 {
 	return getTile(convertMapPosToTilePos(vfMapPos));
 }
 
-Tile* Map::getTile(const sf::Vector2i viTilePos) const
+std::shared_ptr<Tile> Map::getTile(const sf::Vector2i viTilePos) const
 {
 	if (viTilePos.x < m_vTiles.size() &&
 		viTilePos.y < m_vTiles[viTilePos.x].size())
 	{
-		return m_vTiles[viTilePos.x][viTilePos.y].get();
+		return m_vTiles[viTilePos.x][viTilePos.y];
 	}
 	return nullptr;
 }

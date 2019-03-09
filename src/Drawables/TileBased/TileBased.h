@@ -21,21 +21,3 @@ protected:
 	sf::Vector2i m_viTilePos;
 	sf::Vector2i m_viTileDims;
 };
-
-struct Node
-{
-	Node() {}
-	Node(const sf::Vector2f vfMapPos,
-		const float fSpeedMod) :
-		vfMapPos(vfMapPos),
-		fSpeedMod(fSpeedMod)
-	{}
-
-	bool operator==(const Node& rhs) const
-	{
-		return (vfMapPos == rhs.vfMapPos);
-	}
-
-	sf::Vector2f vfMapPos;
-	float fSpeedMod;
-};
