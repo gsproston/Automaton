@@ -18,36 +18,73 @@ Worker::Worker(const sf::Vector2f vfMapPos,
 
 void Worker::tick(sf::Time elapsedTime)
 {
-	if (!m_vPath.empty())
+	// preference following a path
+	while (!m_vNodes.empty() ||
+		!m_vPath.empty())
 	{
-		// we have a path, move towards it
-		auto itTile = m_vPath.end() -1;
-		float fRemainingDist = m_fSpeed * elapsedTime.asSeconds();
-		// get the distance to the next node
-		float fDist = getDistance(m_vfMapPos, (*itTile)->getCentrePos());
-		
-		while (fDist < fRemainingDist * (*itTile)->getSpeedMod())
+		// do we have nodes?
+		while (!m_vNodes.empty())
 		{
-			// move to the point
-			m_vfMapPos = (*itTile)->getCentrePos();
-			fRemainingDist -= fDist / (*itTile)->getSpeedMod();
+			// we have a node, move towards it
+			auto itNode = m_vNodes.begin();
+			float fRemainingDist = m_fSpeed * elapsedTime.asSeconds();
+			// get the distance to the next node
+			float fDist = getDistance(m_vfMapPos, (*itNode).vfPos);
 
-			// get the next point
-			m_vPath.erase(itTile);
-			if (m_vPath.empty())
-				// we have reached our goal
+			if (fDist < fRemainingDist * (*itNode).fSpeed)
+			{
+				// we have enough speed to get to the node
+				m_vfMapPos = (*itNode).vfPos;
+				fRemainingDist -= fDist / (*itNode).fSpeed;
+				// remove the node
+				m_vNodes.erase(itNode);
+			}
+			else
+			{
+				// move towards the node
+				sf::Vector2f vfDelta((*itNode).vfPos - m_vfMapPos);
+				m_vfMapPos += vfDelta * (fRemainingDist / fDist) * (*itNode).fSpeed;
 				return;
-
-			// otherwise, get the next node
-			itTile = m_vPath.end() - 1;
-			fDist = getDistance(m_vfMapPos, (*itTile)->getCentrePos());
+			}
 		}
 
-		// move towards the position
-		sf::Vector2f vfDelta((*itTile)->getCentrePos() - m_vfMapPos);
-		m_vfMapPos += vfDelta * (fRemainingDist / fDist) * (*itTile)->getSpeedMod();
+		while (!m_vPath.empty())
+		{
+			// we have tiles
+			auto itTile = m_vPath.end() - 1;
+			// is the tile passable?
+			if ((*itTile)->getSpeedMod() <= 0 &&
+				m_vPath.size() > 1 &&
+				m_pWorkplace)
+			{
+				// the tile is not passable, recalculate the path
+				m_vPath.clear();	// clear the tiles
+				m_vNodes.clear();	// clear the nodes
+				m_rMap.getPath(m_vfMapPos, m_pWorkplace->getCentrePos(), m_vPath);
+				continue;
+			}
+
+			// tile is passable, generate the nodes
+			m_vNodes.push_back(Node(*itTile));
+			if (m_vPath.size() > 1)
+			{
+				m_vNodes.push_back(Node(
+					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
+					(*itTile)->getSpeedMod()
+				));
+				m_vNodes.push_back(*(itTile - 1));
+			}
+			else if (m_pWorkplace)
+			{
+				// this is the last tile
+				m_vNodes.push_back(Node(m_pWorkplace->getCentrePos(), 1));
+			}
+			m_vPath.erase(itTile);
+			break;
+		}
 	}
-	else if (m_pWorkplace)
+	
+	if (m_pWorkplace)
 	{
 		// we have work, are we close to it?
 		if (getDistance(m_vfMapPos, m_pWorkplace->getCentrePos()) < 5)

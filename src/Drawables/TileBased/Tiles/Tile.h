@@ -22,3 +22,22 @@ private:
 	float m_fSpeedMod;
 	Structure* m_pStructure;
 };
+
+
+struct Node
+{
+	Node(std::shared_ptr<Tile> pTile)
+	{
+		vfPos = pTile->getCentrePos();
+		fSpeed = pTile->getSpeedMod();
+	}
+
+	Node(sf::Vector2f pos, float speed)
+	{
+		vfPos = pos;
+		fSpeed = speed;
+	}
+
+	sf::Vector2f vfPos;
+	float fSpeed;
+};

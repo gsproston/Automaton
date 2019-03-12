@@ -4,6 +4,7 @@
 
 #include "Drawables/PointBased/PointBased.h"
 
+struct Node;
 class Map;
 class Tile;
 class Workplace;
@@ -21,8 +22,8 @@ public:
 
 private:
 	float m_fSpeed; // pixels per second
+	std::vector<Node> m_vNodes;
 	std::vector<std::shared_ptr<Tile>> m_vPath;
-	sf::Vector2f vfDestination;
 
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;

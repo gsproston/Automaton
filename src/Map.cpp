@@ -35,7 +35,7 @@ Map::Map()
 
 	// init the structures
 	int count = 0;
-	while (count < 1)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -46,7 +46,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 1)
+	while (count < 200)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -196,8 +196,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 		// check if the node is close enough to the end goal
 		if (getDistance(pCurrentTile->getCentrePos(), vfSink) <= TILE_SIZE)
 		{
-			std::vector<std::shared_ptr<Tile>> vvfPath = { pSinkTile };
-			vvfPath.push_back(pCurrentTile);
+			std::vector<std::shared_ptr<Tile>> vvfPath = { pCurrentTile };
 			while (umapCameFrom.find(pCurrentTile) != umapCameFrom.end())
 			{
 				pCurrentTile = umapCameFrom[pCurrentTile];
@@ -212,7 +211,8 @@ bool Map::getPath(const sf::Vector2f vfSource,
 		sClosed.insert(pCurrentTile);
 
 		std::vector<std::shared_ptr<Tile>> vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
-		if (pCurrentTile == pSourceTile)
+		if (pCurrentTile == pSourceTile &&
+			pCurrentTile->getSpeedMod() > 0)
 			vTiles.push_back(pCurrentTile);
 		for (auto it = vTiles.begin(); it != vTiles.end(); ++it)
 		{
@@ -236,7 +236,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 			auto cameIt = umapCameFrom.find(*it);
 			if (cameIt != umapCameFrom.end())
 				(*cameIt).second = pCurrentTile;
-			else
+			else if (pCurrentTile->getSpeedMod() > 0)
 				umapCameFrom.insert({ *it, pCurrentTile });
 			umapGScore[*it] = fTmpGScore;
 			umapFScore[*it] = umapGScore[*it] + 
