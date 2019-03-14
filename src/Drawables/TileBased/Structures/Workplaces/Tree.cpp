@@ -5,11 +5,9 @@
 Tree::Tree(const sf::Vector2i viTilePos) :
 	Workplace(viTilePos,
 		sf::Vector2i(0, 1),
-		sf::Vector2i(1, 1))
+		sf::Vector2i(1, 1),
+		sf::Vector2i(4, 28))
 {}
 
 
-void Tree::work()
-{
-
-}
+void Tree::work() {}

@@ -87,7 +87,7 @@ void Worker::tick(sf::Time elapsedTime)
 			else if (m_pWorkplace)
 			{
 				// this tile is the goal
-				m_vNodes.push_back(Node(m_pWorkplace->getCentrePos(), 1));
+				m_vNodes.push_back(Node(m_pWorkplace->getWorkerPos(), 1));
 			}
 			m_vPath.erase(itTile);
 			break;
