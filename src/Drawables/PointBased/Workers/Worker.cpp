@@ -65,9 +65,9 @@ void Worker::tick(sf::Time elapsedTime)
 			}
 
 			// tile is passable, generate the nodes
-			m_vNodes.push_back(Node(*itTile));
 			if (m_vPath.size() > 1)
 			{
+				m_vNodes.push_back(Node(*itTile));
 				m_vNodes.push_back(Node(
 					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
 					(*itTile)->getSpeedMod()

@@ -35,7 +35,7 @@ Map::Map()
 
 	// init the structures
 	int count = 0;
-	while (count < 200)
+	while (count < 50)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -46,7 +46,7 @@ Map::Map()
 
 	// init the workers
 	count = 0;
-	while (count < 200)
+	while (count < 50)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
