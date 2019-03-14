@@ -65,8 +65,9 @@ void Worker::tick(sf::Time elapsedTime)
 			}
 
 			// tile is passable, generate the nodes
-			if (m_vPath.size() > 1)
+			if (m_vPath.size() > 2)
 			{
+				// many tiles left before the goal
 				m_vNodes.push_back(Node(*itTile));
 				m_vNodes.push_back(Node(
 					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
@@ -74,9 +75,18 @@ void Worker::tick(sf::Time elapsedTime)
 				));
 				m_vNodes.push_back(*(itTile - 1));
 			}
+			else if (m_vPath.size() > 1)
+			{
+				// two tiles left before the goal
+				m_vNodes.push_back(Node(*itTile));
+				m_vNodes.push_back(Node(
+					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
+					(*itTile)->getSpeedMod()
+				));
+			}
 			else if (m_pWorkplace)
 			{
-				// this is the last tile
+				// this tile is the goal
 				m_vNodes.push_back(Node(m_pWorkplace->getCentrePos(), 1));
 			}
 			m_vPath.erase(itTile);
