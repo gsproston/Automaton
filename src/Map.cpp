@@ -57,7 +57,7 @@ Map::Map()
 	}
 }
 
-void Map::tick(sf::Time elapsedTime)
+void Map::tick(const sf::Time elapsedTime)
 {
 	// tick all the workers
 	for (int i = 0; i < m_vWorkers.size(); ++i)

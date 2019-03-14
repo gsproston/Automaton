@@ -28,5 +28,5 @@ private:
 	// non-owning pointer to workplace
 	Workplace* m_pWorkplace;
 	// non-owning reference to the map
-	Map& m_rMap;
+	const Map& m_rMap;
 };

@@ -4,7 +4,7 @@
 
 #include "Constants.h"
 
-inline sf::Vector2i convertMapPosToTilePos(sf::Vector2f vfMapPos)
+inline sf::Vector2i convertMapPosToTilePos(const sf::Vector2f vfMapPos)
 {
 	return sf::Vector2i(vfMapPos / (float)TILE_SIZE);
 }

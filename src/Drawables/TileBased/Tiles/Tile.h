@@ -32,7 +32,7 @@ struct Node
 		fSpeed = pTile->getSpeedMod();
 	}
 
-	Node(sf::Vector2f pos, float speed)
+	Node(const sf::Vector2f pos, const float speed)
 	{
 		vfPos = pos;
 		fSpeed = speed;

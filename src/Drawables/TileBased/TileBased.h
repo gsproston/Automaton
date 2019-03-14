@@ -18,6 +18,6 @@ public:
 
 protected:
 	std::array<sf::Vertex, 4> m_aVertices;
-	sf::Vector2i m_viTilePos;
-	sf::Vector2i m_viTileDims;
+	const sf::Vector2i m_viTilePos;
+	const sf::Vector2i m_viTileDims;
 };

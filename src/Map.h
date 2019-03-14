@@ -14,7 +14,7 @@ class Map
 public:
 	Map();
 
-	void tick(sf::Time elapsedTime);
+	void tick(const sf::Time elapsedTime);
 
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
