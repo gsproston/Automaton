@@ -1,6 +1,6 @@
 #include "TileBased.h"
 
-#include "Constants.h"
+#include "Utils/Utils.h"
 
 TileBased::TileBased(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
@@ -9,9 +9,9 @@ TileBased::TileBased(const sf::Vector2i viTilePos,
 	m_viTileDims(viTileDims)
 {
 	// convert to map position
-	sf::Vector2f vfMapPos(viTilePos * TILE_SIZE);
-	sf::Vector2f vfTileMapPos(viTileMapPos * TILE_SIZE);
-	sf::Vector2f vfTileDims(viTileDims * TILE_SIZE);
+	sf::Vector2f vfMapPos = convertTilePosToMapPos(viTilePos);
+	sf::Vector2f vfTileMapPos = convertTilePosToMapPos(viTileMapPos);
+	sf::Vector2f vfTileDims = convertTilePosToMapPos(viTileDims);
 
 	// init the vertices
 	m_aVertices[0] = sf::Vertex(
@@ -44,8 +44,8 @@ void TileBased::addVertices(std::vector<sf::Vertex>& rvVertices) const
 
 sf::Vector2f TileBased::getCentrePos() const
 {
-	sf::Vector2f vfCentrePos(m_viTilePos * TILE_SIZE);
-	return vfCentrePos + sf::Vector2f(m_viTileDims * TILE_SIZE) / 2.f;
+	sf::Vector2f vfCentrePos = convertTilePosToMapPos(m_viTilePos);
+	return vfCentrePos + convertTilePosToMapPos(m_viTileDims) / 2.f;
 }
 
 sf::Vector2i TileBased::getTilePos() const

@@ -1,7 +1,7 @@
 #include "Workplace.h"
 
-#include "Constants.h"
 #include "Drawables/PointBased/Workers/Worker.h"
+#include "Utils/Utils.h"
 
 Workplace::Workplace(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
@@ -21,7 +21,7 @@ Workplace::~Workplace() {}
 // returns the worker position on the map
 sf::Vector2f Workplace::getWorkerPos() const
 {
-	return sf::Vector2f(m_viTilePos * TILE_SIZE + m_viWorkerPos);
+	return convertTilePosToMapPos(m_viTilePos) + sf::Vector2f(m_viWorkerPos);
 }
 
 bool Workplace::noWorker() const
