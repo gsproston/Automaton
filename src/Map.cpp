@@ -38,7 +38,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 50)
+	while (count < 200)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -49,7 +49,7 @@ Map::Map()
 
 	// init the structures
 	count = 0;
-	while (count < 50)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -130,11 +130,16 @@ bool Map::addTask(std::unique_ptr<Task> pTask)
 	}
 
 	if (pWorker)
+	{
 		pWorker->addTaskBack(std::move(pTask));
+		return true;
+	}
 	else
+	{
 		// add to the vector
 		m_vPendingTasks.push_back(std::move(pTask));
-	return pWorker != nullptr;
+		return false;
+	}
 }
 
 

@@ -14,6 +14,8 @@ Move::Move(const Map& rMap,
 
 bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 {
+	float fRemainingDist = rWorker.getSpeed() * elapsedTime.asSeconds();
+
 	while (!m_vNodes.empty() ||
 		!m_vPath.empty())
 	{
@@ -22,7 +24,6 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 		{
 			// we have a node, move towards it
 			auto itNode = m_vNodes.begin();
-			float fRemainingDist = rWorker.getSpeed() * elapsedTime.asSeconds();
 			// get the distance to the next node
 			float fDist = getDistance(rWorker.m_vfMapPos, (*itNode).vfPos);
 

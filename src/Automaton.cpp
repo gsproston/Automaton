@@ -9,7 +9,6 @@
 int main()
 {
 	Map map;
-	sf::Clock clock;
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Automaton");
 
 	sf::Texture texture;
@@ -19,6 +18,10 @@ int main()
 	std::vector<sf::Vertex> vVertices;
 
 	window.setFramerateLimit(60);
+	sf::Clock clock;
+	sf::Time elapsedTime = clock.restart();
+	//map.tick(elapsedTime);
+	//elapsedTime = clock.restart();
 
 	while (window.isOpen())
 	{
@@ -43,7 +46,7 @@ int main()
 
 		window.display();
 
-		sf::Time elapsedTime = clock.restart();
+		elapsedTime = clock.restart();
 		map.tick(elapsedTime);
 	}
 
