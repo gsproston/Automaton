@@ -18,7 +18,7 @@ float Tile::getSpeedMod() const
 	return m_fSpeedMod;
 }
 
-bool Tile::setStructure(Structure* pStructure, bool bOverwrite)
+bool Tile::setStructure(std::shared_ptr<Structure> pStructure, bool bOverwrite)
 {
 	if (m_pStructure && !bOverwrite)
 		return false;

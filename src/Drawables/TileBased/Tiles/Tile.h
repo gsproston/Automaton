@@ -15,12 +15,12 @@ public:
 	virtual ~Tile();
 
 	float getSpeedMod() const;
-	bool setStructure(Structure* pStructure, bool bOverwrite = false);
+	bool setStructure(std::shared_ptr<Structure> pStructure, bool bOverwrite = false);
 
 private:
 	const float m_fDefaultSpeedMod;
 	float m_fSpeedMod;
-	Structure* m_pStructure;
+	std::shared_ptr<Structure> m_pStructure;
 };
 
 

@@ -33,6 +33,9 @@
     <Filter Include="Source Files\Drawables\PointBased\Workers">
       <UniqueIdentifier>{9b4b7ded-20f4-4a31-afd2-086be6117034}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Tasks">
+      <UniqueIdentifier>{a6a3c665-a601-4252-9b95-a10e403d2b47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp">
@@ -70,6 +73,15 @@
     </ClCompile>
     <ClCompile Include="src\Drawables\TileBased\Structures\Road.cpp">
       <Filter>Source Files\Drawables\TileBased\Structures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tasks\Work.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tasks\Move.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tasks\Task.cpp">
+      <Filter>Source Files\Tasks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +123,15 @@
     </ClInclude>
     <ClInclude Include="src\Drawables\TileBased\Structures\Road.h">
       <Filter>Source Files\Drawables\TileBased\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tasks\Task.h">
+      <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tasks\Work.h">
+      <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tasks\Move.h">
+      <Filter>Source Files\Tasks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

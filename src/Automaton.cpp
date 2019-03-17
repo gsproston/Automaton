@@ -28,9 +28,6 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		
-		sf::Time elapsedTime = clock.restart();
-		map.tick(elapsedTime);
 
 		window.clear();
 
@@ -45,6 +42,9 @@ int main()
 		vVertices.clear();
 
 		window.display();
+
+		sf::Time elapsedTime = clock.restart();
+		map.tick(elapsedTime);
 	}
 
 	return 0;

@@ -1,32 +1,28 @@
 #pragma once
 
+#include <deque>
 #include <SFML/Graphics.hpp>
 
 #include "Drawables/PointBased/PointBased.h"
+#include "Tasks/Task.h"
 
-struct Node;
 class Map;
-class Tile;
-class Workplace;
 
 class Worker : public PointBased
 {
 public:
-	Worker(const sf::Vector2f vfMapPos, 
-		Map& rMap);
+	Worker(const sf::Vector2f vfMapPos);
 
 	void tick(sf::Time elapsedTime);
 
+	void addTaskBack(std::unique_ptr<Task> pTask);
+	void addTaskFront(std::unique_ptr<Task> pTask);
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
-	void setWorkplace(Workplace* pWorkplace);
+
+	bool free() const;
+	float getSpeed() const;
 
 private:
-	float m_fSpeed; // pixels per second
-	std::vector<Node> m_vNodes;
-	std::vector<std::shared_ptr<Tile>> m_vPath;
-
-	// non-owning pointer to workplace
-	Workplace* m_pWorkplace;
-	// non-owning reference to the map
-	const Map& m_rMap;
+	const float m_fSpeed; // pixels per second
+	std::deque<std::unique_ptr<Task>> m_dqpTasks;
 };

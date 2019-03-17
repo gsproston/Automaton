@@ -5,10 +5,13 @@
 #include <unordered_set>
 
 #include "Constants.h"
+#include "Utils/Utils.h"
+
 #include "Drawables/TileBased/Structures/Road.h"
 #include "Drawables/TileBased/Structures/Workplaces/Tree.h"
 #include "Drawables/TileBased/Tiles/Grass.h"
-#include "Utils/Utils.h"
+
+#include "Tasks/Work.h"
 
 Map::Map()
 {
@@ -29,31 +32,35 @@ Map::Map()
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
 	{
 		const static int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		std::unique_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, j)));
+		std::shared_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, j)));
 		addStructure(std::move(tmpRoad));
 	}
 
-	// init the structures
-	int count = 0;
-	while (count < 200)
-	{
-		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
-		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		std::unique_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
-		if (addStructure(std::move(tmpTree)))
-			++count;
-	}
-
 	// init the workers
-	count = 0;
-	while (count < 200)
+	int count = 0;
+	while (count < 50)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
-		std::unique_ptr<Worker> tmpWorker(
-			new Worker(sf::Vector2f((float) i, (float) j), *this));
+		std::unique_ptr<Worker> tmpWorker(new Worker(sf::Vector2f((float)i, (float)j)));
 		m_vWorkers.push_back(std::move(tmpWorker));
 		++count;
+	}
+
+	// init the structures
+	count = 0;
+	while (count < 50)
+	{
+		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
+		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		std::shared_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
+		if (addStructure(tmpTree))
+		{
+			++count;
+			// create task to work this
+			std::unique_ptr<Work> pTask(new Work(*this, tmpTree));
+			addTask(std::move(pTask));
+		}
 	}
 }
 
@@ -85,18 +92,6 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::addStructure(std::unique_ptr<Structure> pStructure)
-{
-	std::shared_ptr<Tile> pCurrentTile = getTile(pStructure->getTilePos());
-	if (pCurrentTile &&
-		pCurrentTile->setStructure(pStructure.get()))
-	{
-		m_vStructures.push_back(std::move(pStructure));
-		return true;
-	}
-	return false;
-}
-
 void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 {
 	// add worker vertices
@@ -106,55 +101,56 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::assignWorkplace(Worker& rWorker, const sf::Vector2f vfMapPos,
-	std::vector<std::shared_ptr<Tile>>& rvPath) const
+bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 {
-	Workplace* pWorkplace = getClosestFreeWorkplace(vfMapPos, rvPath);
-	if (pWorkplace)
+	std::shared_ptr<Tile> pCurrentTile = getTile(pStructure->getTilePos());
+	if (pCurrentTile &&
+		pCurrentTile->setStructure(pStructure))
 	{
-		rWorker.setWorkplace(pWorkplace);
-		pWorkplace->setWorker(&rWorker);
+		m_vStructures.push_back(std::move(pStructure));
 		return true;
 	}
 	return false;
 }
 
-// returns the closest workplace to the position that has no worker 
-// also sets the path to this workplace
-Workplace* Map::getClosestFreeWorkplace(const sf::Vector2f vfMapPos,
-	std::vector<std::shared_ptr<Tile>>& rvPath) const
+bool Map::addTask(std::unique_ptr<Task> pTask)
 {
-	// use an ordered map to keep track of the workplaces
-	std::map<float, Workplace*> mWorkplaces;
-
-	// cycle over all workplaces, returning the closest one
-	for (int i = 0; i < m_vStructures.size(); ++i)
+	// attempt to assign to the closest free worker
+	float dist = -1.f;
+	Worker* pWorker = nullptr;
+	// cycle over all workers
+	for (auto it = m_vWorkers.begin(); it != m_vWorkers.end(); ++it)
 	{
-		Workplace* pTmp = dynamic_cast<Workplace*>(m_vStructures[i].get());
-		if (pTmp &&
-			pTmp->noWorker())
+		if ((*it) && (*it)->free() &&
+			(dist < 0 || getDistance((*it)->m_vfMapPos, pTask->getMapPos()) < dist))
 		{
-			// we have a workplace, check distance
-			float fTmpDist = getDistance(vfMapPos, pTmp->getCentrePos());
-			// add to the map
-			mWorkplaces.insert({ fTmpDist, pTmp });
+			dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
+			pWorker = (*it).get();
 		}
 	}
 
-	// iterate over the ordered map, returning the first one with a path to it
-	for (auto it = mWorkplaces.begin(); it != mWorkplaces.end(); ++it)
-	{
-		if (getPath(vfMapPos, (*it).second->getCentrePos(), rvPath))
-			return (*it).second;
-	}
-	// if we reach here, we did not find a workplace
-	return nullptr;
+	if (pWorker)
+		pWorker->addTaskBack(std::move(pTask));
+	else
+		// add to the vector
+		m_vPendingTasks.push_back(std::move(pTask));
+	return pWorker != nullptr;
+}
+
+
+// pathfinding
+
+// heuristic must be admissable - never overestimates the path to the goal
+float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const
+{
+	// return manhattan distance, devided by the best speed modifier
+	return (abs(vfSource.x - vfDest.x) + abs(vfSource.y - vfDest.y)) / BEST_SPEED_MOD;
 }
 
 // returns a vector of coordinates to follow to get from source to sink
-bool Map::getPath(const sf::Vector2f vfSource, 
-	const sf::Vector2f vfSink, 
-	std::vector<std::shared_ptr<Tile>>& rvPath) const
+// if no path is found, returns an empty vector
+std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
+	const sf::Vector2f vfSink) const
 {
 	std::shared_ptr<Tile> pSourceTile = getTile(vfSource);
 	std::shared_ptr<Tile> pSinkTile = getTile(vfSink);
@@ -172,7 +168,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 	umapGScore.insert({ pSourceTile, 0 });
 	// estimated cost of getting to the goal
 	std::unordered_map<std::shared_ptr<Tile>, float> umapFScore;
-	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, vfSink) });
+	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, pSinkTile->getCentrePos()) });
 
 	while (!sOpen.empty())
 	{
@@ -194,7 +190,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 			continue;
 
 		// check if the node is close enough to the end goal
-		if (getDistance(pCurrentTile->getCentrePos(), vfSink) <= TILE_SIZE)
+		if (getDistance(pCurrentTile->getCentrePos(), pSinkTile->getCentrePos()) <= TILE_SIZE)
 		{
 			std::vector<std::shared_ptr<Tile>> vvfPath = { pSinkTile };
 			if (pSinkTile != pCurrentTile &&
@@ -205,8 +201,7 @@ bool Map::getPath(const sf::Vector2f vfSource,
 				pCurrentTile = umapCameFrom[pCurrentTile];
 				vvfPath.push_back(pCurrentTile);
 			}
-			rvPath = vvfPath;
-			return true;
+			return vvfPath;
 		}
 
 		// add the current tile to the list of evaluated tiles
@@ -243,11 +238,11 @@ bool Map::getPath(const sf::Vector2f vfSource,
 				umapCameFrom.insert({ *it, pCurrentTile });
 			umapGScore[*it] = fTmpGScore;
 			umapFScore[*it] = umapGScore[*it] + 
-				getHeuristic((*it)->getCentrePos(), vfSink);
+				getHeuristic((*it)->getCentrePos(), pSinkTile->getCentrePos());
 		}
 	}
 
-	return false;
+	return {};
 }
 
 // returns a vector of all neighbouring tiles
@@ -287,11 +282,4 @@ std::shared_ptr<Tile> Map::getTile(const sf::Vector2i viTilePos) const
 		return m_vTiles[viTilePos.x][viTilePos.y];
 	}
 	return nullptr;
-}
-
-// heuristic must be admissable - never overestimates the path to the goal
-float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const
-{
-	// return manhattan distance, devided by the best speed modifier
-	return (abs(vfSource.x - vfDest.x) + abs(vfSource.y - vfDest.y)) / BEST_SPEED_MOD;
 }

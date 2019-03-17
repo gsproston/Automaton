@@ -31,6 +31,9 @@
     <ClCompile Include="src\Drawables\TileBased\Tiles\Grass.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Tiles\Tile.cpp" />
     <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Tasks\Move.cpp" />
+    <ClCompile Include="src\Tasks\Task.cpp" />
+    <ClCompile Include="src\Tasks\Work.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Constants.h" />
@@ -45,6 +48,9 @@
     <ClInclude Include="src\Drawables\TileBased\Tiles\Grass.h" />
     <ClInclude Include="src\Drawables\TileBased\Tiles\Tile.h" />
     <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Tasks\Move.h" />
+    <ClInclude Include="src\Tasks\Task.h" />
+    <ClInclude Include="src\Tasks\Work.h" />
     <ClInclude Include="src\Utils\Utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
