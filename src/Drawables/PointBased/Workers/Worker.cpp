@@ -9,14 +9,17 @@ Worker::Worker(const sf::Vector2f vfMapPos):
 {}
 
 
-void Worker::tick(sf::Time elapsedTime)
+// returns true if the worker is free
+bool Worker::tick(sf::Time elapsedTime)
 {	
 	if (!m_dqpTasks.empty() &&
 		m_dqpTasks.front()->tick(elapsedTime, *this))
 	{
-		// delete the Task
+		// task completed, delete the Task
 		m_dqpTasks.pop_front();
+		return m_dqpTasks.empty();
 	}
+	return false;
 }
 
 

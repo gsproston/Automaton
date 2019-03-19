@@ -43,7 +43,7 @@ Map::Map()
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
 		std::unique_ptr<Worker> tmpWorker(new Worker(sf::Vector2f((float)i, (float)j)));
-		m_vWorkers.push_back(std::move(tmpWorker));
+		addWorker(std::move(tmpWorker));
 		++count;
 	}
 
@@ -54,22 +54,28 @@ Map::Map()
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::shared_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
-		if (addStructure(tmpTree))
-		{
+		if (addWorkplace(tmpTree))
 			++count;
-			// create task to work this
-			std::unique_ptr<Work> pTask(new Work(*this, tmpTree));
-			addTask(std::move(pTask));
-		}
 	}
 }
 
 void Map::tick(const sf::Time elapsedTime)
 {
 	// tick all the workers
-	for (int i = 0; i < m_vWorkers.size(); ++i)
+	for (auto it = m_vWorkersBusy.begin(); it != m_vWorkersBusy.end();)
 	{
-		m_vWorkers[i]->tick(elapsedTime);
+		if ((*it)->tick(elapsedTime))
+		{
+			// worker is free, move it to the free vector
+			m_vWorkersFree.push_back(std::move(*it));
+			m_vWorkersBusy.erase(it);
+			// see if we have any tasks for our newly freed worker
+			assignTask();
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 
@@ -95,9 +101,13 @@ void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
 void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 {
 	// add worker vertices
-	for (uint32_t i = 0; i < m_vWorkers.size(); ++i)
+	for (uint32_t i = 0; i < m_vWorkersBusy.size(); ++i)
 	{
-		m_vWorkers[i]->addVertices(rvVertices);
+		m_vWorkersBusy[i]->addVertices(rvVertices);
+	}
+	for (uint32_t i = 0; i < m_vWorkersFree.size(); ++i)
+	{
+		m_vWorkersFree[i]->addVertices(rvVertices);
 	}
 }
 
@@ -113,33 +123,57 @@ bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 	return false;
 }
 
-bool Map::addTask(std::unique_ptr<Task> pTask)
+bool Map::addWorker(std::unique_ptr<Worker> pWorker)
 {
-	// attempt to assign to the closest free worker
+	m_vWorkersFree.push_back(std::move(pWorker));
+	assignTask();
+	return true;
+}
+
+bool Map::addWorkplace(std::shared_ptr<Workplace> pWorkplace)
+{
+	if (!addStructure(pWorkplace))
+		return false;
+
+	// add a work task for this workplace
+	std::unique_ptr<Work> pTask(new Work(*this, pWorkplace));
+	m_vPendingTasks.push_back(std::move(pTask));
+	assignTask();
+	return true;
+}
+
+bool Map::assignTask()
+{
+	if (m_vPendingTasks.empty() ||
+		m_vWorkersFree.empty())
+		return false;
+
+	// otherwise, we have at least one free task and 
+	//		at least one free worker
+	std::unique_ptr<Task> pTask = std::move(m_vPendingTasks.front());
+	m_vPendingTasks.erase(m_vPendingTasks.begin());
+	// find the closest worker
 	float dist = -1.f;
-	Worker* pWorker = nullptr;
+	auto itWorker = m_vWorkersFree.begin();
 	// cycle over all workers
-	for (auto it = m_vWorkers.begin(); it != m_vWorkers.end(); ++it)
+	for (auto it = m_vWorkersFree.begin() + 1; it != m_vWorkersFree.end();)
 	{
 		if ((*it) && (*it)->free() &&
 			(dist < 0 || getDistance((*it)->m_vfMapPos, pTask->getMapPos()) < dist))
 		{
 			dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
-			pWorker = (*it).get();
+			itWorker = it;
 		}
+		++it;
 	}
 
-	if (pWorker)
-	{
-		pWorker->addTaskBack(std::move(pTask));
-		return true;
-	}
-	else
-	{
-		// add to the vector
-		m_vPendingTasks.push_back(std::move(pTask));
-		return false;
-	}
+	// assign the task to the worker
+	(*itWorker)->addTaskBack(std::move(pTask));
+	// move the worker to the busy vector
+	m_vWorkersBusy.push_back(std::move(*itWorker));
+	// erase it from the free vector
+	m_vWorkersFree.erase(itWorker);
+	return true;
 }
 
 

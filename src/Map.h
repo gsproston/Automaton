@@ -8,6 +8,7 @@
 #include "Drawables/TileBased/Structures/Structure.h"
 #include "Drawables/TileBased/Tiles/Tile.h"
 #include "Drawables/PointBased/Workers/Worker.h"
+#include "Drawables/TileBased/Structures/Workplaces/Workplace.h"
 
 class Map
 {
@@ -26,12 +27,16 @@ public:
 private:
 	std::vector<std::shared_ptr<Structure>> m_vStructures;
 	std::vector<std::vector<std::shared_ptr<Tile>>> m_vTiles;
-	std::vector<std::unique_ptr<Worker>> m_vWorkers;
+	std::vector<std::unique_ptr<Worker>> m_vWorkersBusy;
+	std::vector<std::unique_ptr<Worker>> m_vWorkersFree;
 
 	std::vector<std::unique_ptr<Task>> m_vPendingTasks;
 
 	bool addStructure(std::shared_ptr<Structure> pStructure);
-	bool addTask(std::unique_ptr<Task> pTask);
+	bool addWorker(std::unique_ptr<Worker> pWorker);
+	bool addWorkplace(std::shared_ptr<Workplace> pWorkplace);
+
+	bool assignTask();
 
 	// pathfinding
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;

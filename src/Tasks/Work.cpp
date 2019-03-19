@@ -17,7 +17,7 @@ bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
 		return true;
 
 	// we have work, are we close to it?
-	if (getDistance(rWorker.m_vfMapPos, m_pWorkplace->getCentrePos()) < 5)
+	if (getDistance(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos()) < 5)
 	{
 		// we are! so we can work it
 		m_pWorkplace->work();

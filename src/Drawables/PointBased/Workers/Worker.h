@@ -13,7 +13,7 @@ class Worker : public PointBased
 public:
 	Worker(const sf::Vector2f vfMapPos);
 
-	void tick(sf::Time elapsedTime);
+	bool tick(sf::Time elapsedTime);
 
 	void addTaskBack(std::unique_ptr<Task> pTask);
 	void addTaskFront(std::unique_ptr<Task> pTask);
