@@ -11,6 +11,7 @@ public:
 		std::shared_ptr<Workplace> pWorkplace);
 
 	bool tick(sf::Time elapsedTime, Worker& rWorker);
+	bool validate(Worker* pWorker);
 
 private:
 	const Map& m_rMap;

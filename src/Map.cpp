@@ -47,14 +47,14 @@ Map::Map()
 		++count;
 	}
 
-	// init the structures
+	// init the workplaces
 	count = 0;
 	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::shared_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
-		if (addWorkplace(tmpTree))
+		if (addWorkplace(std::move(tmpTree)))
 			++count;
 	}
 }
@@ -66,11 +66,12 @@ void Map::tick(const sf::Time elapsedTime)
 	{
 		if ((*it)->tick(elapsedTime))
 		{
-			// worker is free, move it to the free vector
-			m_vWorkersFree.push_back(std::move(*it));
+			// this worker has finished working
+			std::unique_ptr<Worker> pWorker = std::move(*it);
+			// erase from the busy vector
 			m_vWorkersBusy.erase(it);
 			// see if we have any tasks for our newly freed worker
-			assignTask();
+			assignWorker(std::move(pWorker));
 		}
 		else
 		{
@@ -125,8 +126,7 @@ bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 
 bool Map::addWorker(std::unique_ptr<Worker> pWorker)
 {
-	m_vWorkersFree.push_back(std::move(pWorker));
-	assignTask();
+	assignWorker(std::move(pWorker));
 	return true;
 }
 
@@ -137,58 +137,92 @@ bool Map::addWorkplace(std::shared_ptr<Workplace> pWorkplace)
 
 	// add a work task for this workplace
 	std::unique_ptr<Work> pTask(new Work(*this, pWorkplace));
-	m_vPendingTasks.push_back(std::move(pTask));
-	assignTask();
+	assignTask(std::move(pTask));
 	return true;
 }
 
-bool Map::assignTask()
+bool Map::assignTask(std::unique_ptr<Task> pTask)
 {
-	if (m_vPendingTasks.empty() ||
-		m_vWorkersFree.empty())
-		return false;
-
-	std::unique_ptr<Task> pTask = std::move(m_vPendingTasks.front());
-	// ordered map of workers and their distances to the task
-	std::map<float, std::vector<std::unique_ptr<Worker>>::iterator> mWorkers;
-
-	// cycle over all workers
-	for (auto it = m_vWorkersFree.begin(); it != m_vWorkersFree.end();)
+	if (!m_vWorkersFree.empty())
 	{
-		if ((*it) && (*it)->free())
-		{
-			// get the distance to the task
-			float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
-			// add it to the map
-			mWorkers.insert({ dist, it });
-		}
-		++it;
-	}
+		// ordered map of workers and their distances to the task
+		std::map<float, std::vector<std::unique_ptr<Worker>>::iterator> mWorkers;
 
-	// now, cycle over our map, returning the first worker who can reach the task
-	for (auto it = mWorkers.begin(); it != mWorkers.end(); ++it)
-	{
-		std::vector<std::shared_ptr<Tile>> vPath = 
-			getPath((*(*it).second)->m_vfMapPos, pTask->getMapPos());
-		if (!vPath.empty())
+		// cycle over all workers
+		for (auto it = m_vWorkersFree.begin(); it != m_vWorkersFree.end();)
 		{
-			// remove the task from the vector
-			m_vPendingTasks.erase(m_vPendingTasks.begin());
-			// assign the task to the worker
-			(*(*it).second)->addTaskBack(std::move(pTask));
-			// move the worker to the busy vector
-			m_vWorkersBusy.push_back(std::move((*(*it).second)));
-			// erase it from the free vector
-			m_vWorkersFree.erase((*it).second);
-
-			return true;
+			if ((*it) && (*it)->free())
+			{
+				// get the distance to the task
+				float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
+				// add it to the map
+				mWorkers.insert({ dist, it });
+			}
+			++it;
 		}
-		else
+
+		// now, cycle over our map, returning the first worker who can reach the task
+		for (auto it = mWorkers.begin(); it != mWorkers.end(); ++it)
 		{
-			continue;
+			if (pTask->validate((*(*it).second).get()))
+			{
+				// assign the task to the worker
+				(*(*it).second)->addTaskBack(std::move(pTask));
+				// move the worker to the busy vector
+				m_vWorkersBusy.push_back(std::move((*(*it).second)));
+				// erase it from the free vector
+				m_vWorkersFree.erase((*it).second);
+
+				return true;
+			}
 		}
 	}
 
+	// we didn't find a free worker for this task, add to the vector
+	m_vPendingTasks.push_back(std::move(pTask));
+	return false;
+}
+
+bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
+{
+	if (!m_vPendingTasks.empty() &&
+		pWorker->free())
+	{
+		// ordered map of tasks and their distances to the worker
+		std::map<float, std::vector<std::unique_ptr<Task>>::iterator> mTasks;
+
+		// cycle over all tasks
+		for (auto it = m_vPendingTasks.begin(); it != m_vPendingTasks.end();)
+		{
+			if (*it)
+			{
+				// get the distance to the worker
+				float dist = getDistance((*it)->getMapPos(), pWorker->m_vfMapPos);
+				// add it to the map
+				mTasks.insert({ dist, it });
+			}
+			++it;
+		}
+
+		// now, cycle over our map, returning the first tasks which the worker can reach
+		for (auto it = mTasks.begin(); it != mTasks.end(); ++it)
+		{
+			if ((*(*it).second)->validate(pWorker.get()))
+			{
+				// assign the task to the worker
+				pWorker->addTaskBack(std::move(*(*it).second));
+				// erase the task from the vector
+				m_vPendingTasks.erase((*it).second);
+				// move the worker to the busy vector
+				m_vWorkersBusy.push_back(std::move(pWorker));
+
+				return true;
+			}
+		}
+	}
+
+	// we didn't find a task for this worker, add to the free vector
+	m_vWorkersFree.push_back(std::move(pWorker));
 	return false;
 }
 

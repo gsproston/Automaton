@@ -11,6 +11,7 @@ public:
 		const sf::Vector2f vfDestination);
 
 	bool tick(const sf::Time elapsedTime, Worker& rWorker);
+	bool validate(Worker* pWorker);
 
 private:
 	const Map& m_rMap;

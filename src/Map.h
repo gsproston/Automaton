@@ -36,7 +36,8 @@ private:
 	bool addWorker(std::unique_ptr<Worker> pWorker);
 	bool addWorkplace(std::shared_ptr<Workplace> pWorkplace);
 
-	bool assignTask();
+	bool assignTask(std::unique_ptr<Task> pTask);
+	bool assignWorker(std::unique_ptr<Worker> pWorker);
 
 	// pathfinding
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;

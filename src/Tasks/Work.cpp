@@ -17,7 +17,7 @@ bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
 		return true;
 
 	// we have work, are we close to it?
-	if (getDistance(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos()) < 5)
+	if (rWorker.m_vfMapPos == m_pWorkplace->getWorkerPos())
 	{
 		// we are! so we can work it
 		m_pWorkplace->work();
@@ -30,5 +30,28 @@ bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
 		std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
 		rWorker.addTaskFront(std::move(moveTask));
 	}
+	return false;
+}
+
+bool Work::validate(Worker* pWorker)
+{
+	// must have a workplace and a worker
+	if (!m_pWorkplace || !pWorker)
+		return false;
+	// fine if the worker is at the workplace
+	if (pWorker->m_vfMapPos == m_pWorkplace->getWorkerPos())
+		return true;
+
+	// calculate the path to the workplace
+	std::vector<std::shared_ptr<Tile>> vpPath =
+		m_rMap.getPath(pWorker->m_vfMapPos, m_pWorkplace->getWorkerPos());
+	if (!vpPath.empty())
+	{
+		// we have a path to the workplace
+		std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+		pWorker->addTaskFront(std::move(moveTask));
+		return true;
+	}
+	// otherwise, we can't reach the workplace, so can't work it
 	return false;
 }

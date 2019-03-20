@@ -48,9 +48,9 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 		{
 			// we have tiles
 			auto itTile = m_vPath.end() - 1;
-			// is the tile passable?
-			if ((*itTile)->getSpeedMod() <= 0 &&
-				m_vPath.size() > 1)
+			// is the tile and next tile passable?
+			if (m_vPath.size() > 2 && 
+				((*itTile)->getSpeedMod() <= 0 || (*(itTile-1))->getSpeedMod() <= 0))
 			{
 				// the tile is not passable, recalculate the path
 				m_vPath.clear();	// clear the tiles
@@ -91,4 +91,9 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 
 	// if we reach here, we have reached the goal
 	return true;
+}
+
+bool Move::validate(Worker* pWorker)
+{
+	return (pWorker);
 }
