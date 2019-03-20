@@ -148,32 +148,48 @@ bool Map::assignTask()
 		m_vWorkersFree.empty())
 		return false;
 
-	// otherwise, we have at least one free task and 
-	//		at least one free worker
 	std::unique_ptr<Task> pTask = std::move(m_vPendingTasks.front());
-	m_vPendingTasks.erase(m_vPendingTasks.begin());
-	// find the closest worker
-	float dist = -1.f;
-	auto itWorker = m_vWorkersFree.begin();
+	// ordered map of workers and their distances to the task
+	std::map<float, std::vector<std::unique_ptr<Worker>>::iterator> mWorkers;
+
 	// cycle over all workers
-	for (auto it = m_vWorkersFree.begin() + 1; it != m_vWorkersFree.end();)
+	for (auto it = m_vWorkersFree.begin(); it != m_vWorkersFree.end();)
 	{
-		if ((*it) && (*it)->free() &&
-			(dist < 0 || getDistance((*it)->m_vfMapPos, pTask->getMapPos()) < dist))
+		if ((*it) && (*it)->free())
 		{
-			dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
-			itWorker = it;
+			// get the distance to the task
+			float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
+			// add it to the map
+			mWorkers.insert({ dist, it });
 		}
 		++it;
 	}
 
-	// assign the task to the worker
-	(*itWorker)->addTaskBack(std::move(pTask));
-	// move the worker to the busy vector
-	m_vWorkersBusy.push_back(std::move(*itWorker));
-	// erase it from the free vector
-	m_vWorkersFree.erase(itWorker);
-	return true;
+	// now, cycle over our map, returning the first worker who can reach the task
+	for (auto it = mWorkers.begin(); it != mWorkers.end(); ++it)
+	{
+		std::vector<std::shared_ptr<Tile>> vPath = 
+			getPath((*(*it).second)->m_vfMapPos, pTask->getMapPos());
+		if (!vPath.empty())
+		{
+			// remove the task from the vector
+			m_vPendingTasks.erase(m_vPendingTasks.begin());
+			// assign the task to the worker
+			(*(*it).second)->addTaskBack(std::move(pTask));
+			// move the worker to the busy vector
+			m_vWorkersBusy.push_back(std::move((*(*it).second)));
+			// erase it from the free vector
+			m_vWorkersFree.erase((*it).second);
+
+			return true;
+		}
+		else
+		{
+			continue;
+		}
+	}
+
+	return false;
 }
 
 
