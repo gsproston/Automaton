@@ -151,14 +151,28 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 		// cycle over all workers
 		for (auto it = m_vWorkersFree.begin(); it != m_vWorkersFree.end();)
 		{
-			if ((*it) && (*it)->free())
+			if (*it)
 			{
-				// get the distance to the task
-				float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
-				// add it to the map
-				mWorkers.insert({ dist, it });
+				if ((*it)->free())
+				{
+					// get the distance to the task
+					float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
+					// add it to the map
+					mWorkers.insert({ dist, it });
+					++it;
+				}
+				else
+				{
+					// move to the busy vector
+					m_vWorkersBusy.push_back(std::move(*it));
+					m_vWorkersFree.erase(it);
+				}
 			}
-			++it;
+			else
+			{
+				// no worker here, remove it
+				m_vWorkersFree.erase(it);
+			}
 		}
 
 		// now, cycle over our map, returning the first worker who can reach the task
@@ -200,8 +214,13 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 				float dist = getDistance((*it)->getMapPos(), pWorker->m_vfMapPos);
 				// add it to the map
 				mTasks.insert({ dist, it });
+				++it;
 			}
-			++it;
+			else
+			{
+				// no task here, remove it
+				m_vPendingTasks.erase(it);
+			}
 		}
 
 		// now, cycle over our map, returning the first tasks which the worker can reach
