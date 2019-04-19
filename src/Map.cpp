@@ -38,7 +38,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 200)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -61,7 +61,7 @@ Map::Map()
 
 void Map::tick(const sf::Time elapsedTime)
 {
-	// tick all the workers
+	// tick all the busy workers
 	for (auto it = m_vWorkersBusy.begin(); it != m_vWorkersBusy.end();)
 	{
 		if ((*it)->tick(elapsedTime))
@@ -69,7 +69,7 @@ void Map::tick(const sf::Time elapsedTime)
 			// this worker has finished working
 			std::unique_ptr<Worker> pWorker = std::move(*it);
 			// erase from the busy vector
-			m_vWorkersBusy.erase(it);
+			it = m_vWorkersBusy.erase(it);
 			// see if we have any tasks for our newly freed worker
 			assignWorker(std::move(pWorker));
 		}

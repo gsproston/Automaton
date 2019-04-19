@@ -3,7 +3,7 @@
 #include "Move.h"
 #include "Utils/Utils.h"
 
-Work::Work(const Map& rMap,
+Work::Work(Map& rMap,
 	std::shared_ptr<Workplace> pWorkplace) :
 	Task(pWorkplace->getCentrePos()),
 	m_rMap(rMap),
@@ -27,12 +27,23 @@ bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
 		// create a task to move to this place
 		std::vector<std::shared_ptr<Tile>> vpPath = 
 			m_rMap.getPath(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos());
-		std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
-		rWorker.addTaskFront(std::move(moveTask));
+
+		if (vpPath.empty())
+		{
+			// cannot find a path, assign someone else to work this place
+			std::unique_ptr<Work> pWorkTask(new Work(m_rMap, m_pWorkplace));
+			m_rMap.assignTask(std::move(pWorkTask));
+			return true;
+		}
+
+		// otherwise, move to the workplace
+		std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+		rWorker.addTaskFront(std::move(pMoveTask));
 	}
 	return false;
 }
 
+// returns true if the worker can work the workplace
 bool Work::validate(Worker* pWorker)
 {
 	// must have a workplace and a worker
@@ -45,13 +56,11 @@ bool Work::validate(Worker* pWorker)
 	// calculate the path to the workplace
 	std::vector<std::shared_ptr<Tile>> vpPath =
 		m_rMap.getPath(pWorker->m_vfMapPos, m_pWorkplace->getWorkerPos());
-	if (!vpPath.empty())
-	{
-		// we have a path to the workplace
-		std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
-		pWorker->addTaskFront(std::move(moveTask));
-		return true;
-	}
-	// otherwise, we can't reach the workplace, so can't work it
-	return false;
+	if (vpPath.empty())
+		// can't find a path, so can't work this
+		return false;
+	// otherwise, we have a path to the workplace
+	std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+	pWorker->addTaskFront(std::move(moveTask));
+	return true;
 }

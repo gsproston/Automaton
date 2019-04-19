@@ -7,14 +7,14 @@
 class Work : public Task
 {
 public:
-	Work(const Map& rMap,
+	Work(Map& rMap,
 		std::shared_ptr<Workplace> pWorkplace);
 
 	bool tick(sf::Time elapsedTime, Worker& rWorker);
 	bool validate(Worker* pWorker);
 
 private:
-	const Map& m_rMap;
+	Map& m_rMap;
 
 	// non-owning pointer to the workplace
 	std::shared_ptr<Workplace> m_pWorkplace;

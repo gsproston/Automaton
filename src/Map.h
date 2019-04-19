@@ -20,6 +20,8 @@ public:
 	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
 	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
 
+	bool assignTask(std::unique_ptr<Task> pTask);
+
 	// pathfinding
 	std::vector<std::shared_ptr<Tile>> getPath(const sf::Vector2f vfSource,
 		const sf::Vector2f vfSink) const;
@@ -36,7 +38,6 @@ private:
 	bool addWorker(std::unique_ptr<Worker> pWorker);
 	bool addWorkplace(std::shared_ptr<Workplace> pWorkplace);
 
-	bool assignTask(std::unique_ptr<Task> pTask);
 	bool assignWorker(std::unique_ptr<Worker> pWorker);
 
 	// pathfinding
