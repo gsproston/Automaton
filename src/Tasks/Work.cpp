@@ -11,7 +11,7 @@ Work::Work(Map& rMap,
 {}
 
 
-bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
+bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 {
 	if (!m_pWorkplace)
 		return true;
@@ -20,26 +20,29 @@ bool Work::tick(sf::Time elapsedTime, Worker& rWorker)
 	if (rWorker.m_vfMapPos == m_pWorkplace->getWorkerPos())
 	{
 		// we are! so we can work it
-		m_pWorkplace->work();
-	}
-	else
-	{
-		// create a task to move to this place
-		std::vector<std::shared_ptr<Tile>> vpPath = 
-			m_rMap.getPath(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos());
-
-		if (vpPath.empty())
+		if (m_pWorkplace->work(elapsedTime))
 		{
-			// cannot find a path, assign someone else to work this place
-			std::unique_ptr<Work> pWorkTask(new Work(m_rMap, m_pWorkplace));
-			m_rMap.assignTask(std::move(pWorkTask));
+			m_rMap.removeStructure(m_pWorkplace);
 			return true;
 		}
-
-		// otherwise, move to the workplace
-		std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
-		rWorker.addTaskFront(std::move(pMoveTask));
+		return false;
 	}
+
+	// create a task to move to this place
+	std::vector<std::shared_ptr<Tile>> vpPath = 
+		m_rMap.getPath(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos());
+
+	if (vpPath.empty())
+	{
+		// cannot find a path, assign someone else to work this place
+		std::unique_ptr<Work> pWorkTask(new Work(m_rMap, m_pWorkplace));
+		m_rMap.assignTask(std::move(pWorkTask));
+		return true;
+	}
+
+	// otherwise, move to the workplace
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+	rWorker.addTaskFront(std::move(pMoveTask));
 	return false;
 }
 

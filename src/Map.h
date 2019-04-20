@@ -22,6 +22,8 @@ public:
 
 	bool assignTask(std::unique_ptr<Task> pTask);
 
+	bool removeStructure(const std::shared_ptr<Structure> pStructure);
+
 	// pathfinding
 	std::vector<std::shared_ptr<Tile>> getPath(const sf::Vector2f vfSource,
 		const sf::Vector2f vfSink) const;

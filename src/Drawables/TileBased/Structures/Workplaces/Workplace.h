@@ -13,15 +13,11 @@ public:
 		const sf::Vector2i viWorkerPos);
 	virtual ~Workplace();
 
-	virtual void work() = 0;
+	virtual bool work(const sf::Time elapsedTime) = 0;
 
 	sf::Vector2f getWorkerPos() const;
-	bool noWorker() const;
-	void setWorker(Worker* pWorker);
 
 private:
-	// non-owning pointer to worker
-	Worker* m_pWorker;
 	// pixel offset to where the worker should go
 	const sf::Vector2i m_viWorkerPos;
 };

@@ -68,10 +68,10 @@ void Map::tick(const sf::Time elapsedTime)
 		{
 			// this worker has finished working
 			std::unique_ptr<Worker> pWorker = std::move(*it);
-			// erase from the busy vector
-			it = m_vWorkersBusy.erase(it);
 			// see if we have any tasks for our newly freed worker
 			assignWorker(std::move(pWorker));
+			// erase from the busy vector
+			it = m_vWorkersBusy.erase(it);
 		}
 		else
 		{
@@ -234,7 +234,6 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 				m_vPendingTasks.erase((*it).second);
 				// move the worker to the busy vector
 				m_vWorkersBusy.push_back(std::move(pWorker));
-
 				return true;
 			}
 		}
@@ -242,6 +241,24 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 
 	// we didn't find a task for this worker, add to the free vector
 	m_vWorkersFree.push_back(std::move(pWorker));
+	return false;
+}
+
+// returns true if we were able to delete the structure
+bool Map::removeStructure(const std::shared_ptr<Structure> pStructure)
+{
+	if (!pStructure)
+		return false;
+
+	for (auto it = m_vStructures.begin(); it != m_vStructures.end(); ++it)
+	{
+		if (*it &&
+			*it == pStructure)
+		{
+			m_vStructures.erase(it);
+			return true;
+		}
+	}
 	return false;
 }
 

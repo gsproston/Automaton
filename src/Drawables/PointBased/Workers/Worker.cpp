@@ -10,7 +10,7 @@ Worker::Worker(const sf::Vector2f vfMapPos):
 
 
 // returns true if the worker is free
-bool Worker::tick(sf::Time elapsedTime)
+bool Worker::tick(const sf::Time elapsedTime)
 {	
 	if (!m_dqpTasks.empty() &&
 		m_dqpTasks.front()->tick(elapsedTime, *this))

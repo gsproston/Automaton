@@ -7,5 +7,8 @@ class Tree : public Workplace
 public:
 	Tree(const sf::Vector2i viTIlePos);
 
-	void work();
+	bool work(const sf::Time elapsedTime);
+
+private:
+	float m_fHealth; // number of seconds to destroy
 };
