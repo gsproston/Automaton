@@ -6,12 +6,12 @@
 Workplace::Workplace(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
 	const sf::Vector2i viDimensions,
-	const sf::Vector2i viWorkerPos):
+	const sf::Vector2f vfWorkerPos):
 	Structure(viTilePos,
 		viTileMapPos,
 		viDimensions,
 		0),
-	m_viWorkerPos(viWorkerPos)
+	m_vfWorkerPos(vfWorkerPos)
 {}
 
 Workplace::~Workplace() {}
@@ -20,5 +20,5 @@ Workplace::~Workplace() {}
 // returns the worker position on the map
 sf::Vector2f Workplace::getWorkerPos() const
 {
-	return convertTilePosToMapPos(m_viTilePos) + sf::Vector2f(m_viWorkerPos);
+	return convertTilePosToMapPos(m_viTilePos) + m_vfWorkerPos * (float) TILE_SIZE;
 }

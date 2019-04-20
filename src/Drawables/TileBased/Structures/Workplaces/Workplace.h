@@ -10,7 +10,7 @@ public:
 	Workplace(const sf::Vector2i viTilePos,
 		const sf::Vector2i viTileMapPos,
 		const sf::Vector2i viDimensions,
-		const sf::Vector2i viWorkerPos);
+		const sf::Vector2f vfWorkerPos);
 	virtual ~Workplace();
 
 	virtual bool work(const sf::Time elapsedTime) = 0;
@@ -18,6 +18,6 @@ public:
 	sf::Vector2f getWorkerPos() const;
 
 private:
-	// pixel offset to where the worker should go
-	const sf::Vector2i m_viWorkerPos;
+	// percent offset to where the worker should go
+	const sf::Vector2f m_vfWorkerPos;
 };
