@@ -13,35 +13,36 @@ Work::Work(Map& rMap,
 
 bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 {
-	if (!m_pWorkplace)
+	std::shared_ptr<Workplace> pWorkplace;
+	if (!(pWorkplace = m_pWorkplace.lock()))
 		return true;
 
 	// we have work, are we close to it?
-	if (rWorker.m_vfMapPos == m_pWorkplace->getWorkerPos())
+	if (rWorker.m_vfMapPos == pWorkplace->getWorkerPos())
 	{
 		// we are! so we can work it
-		if (m_pWorkplace->work(elapsedTime))
+		if (pWorkplace->work(elapsedTime))
 		{
-			m_rMap.removeStructure(m_pWorkplace);
+			m_rMap.removeStructure(pWorkplace);
 			return true;
 		}
 		return false;
 	}
 
 	// create a task to move to this place
-	std::vector<std::shared_ptr<Tile>> vpPath = 
-		m_rMap.getPath(rWorker.m_vfMapPos, m_pWorkplace->getWorkerPos());
+	std::vector<Tile*> vpPath = 
+		m_rMap.getPath(rWorker.m_vfMapPos, pWorkplace->getWorkerPos());
 
 	if (vpPath.empty())
 	{
 		// cannot find a path, assign someone else to work this place
-		std::unique_ptr<Work> pWorkTask(new Work(m_rMap, m_pWorkplace));
+		std::unique_ptr<Work> pWorkTask(new Work(m_rMap, pWorkplace));
 		m_rMap.assignTask(std::move(pWorkTask));
 		return true;
 	}
 
 	// otherwise, move to the workplace
-	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, pWorkplace->getWorkerPos()));
 	rWorker.addTaskFront(std::move(pMoveTask));
 	return false;
 }
@@ -49,21 +50,22 @@ bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 // returns true if the worker can work the workplace
 bool Work::validate(Worker* pWorker)
 {
+	std::shared_ptr<Workplace> pWorkplace;
 	// must have a workplace and a worker
-	if (!m_pWorkplace || !pWorker)
+	if (!(pWorkplace = m_pWorkplace.lock()) || !pWorker)
 		return false;
 	// fine if the worker is at the workplace
-	if (pWorker->m_vfMapPos == m_pWorkplace->getWorkerPos())
+	if (pWorker->m_vfMapPos == pWorkplace->getWorkerPos())
 		return true;
 
 	// calculate the path to the workplace
-	std::vector<std::shared_ptr<Tile>> vpPath =
-		m_rMap.getPath(pWorker->m_vfMapPos, m_pWorkplace->getWorkerPos());
+	std::vector<Tile*> vpPath =
+		m_rMap.getPath(pWorker->m_vfMapPos, pWorkplace->getWorkerPos());
 	if (vpPath.empty())
 		// can't find a path, so can't work this
 		return false;
 	// otherwise, we have a path to the workplace
-	std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_pWorkplace->getWorkerPos()));
+	std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, pWorkplace->getWorkerPos()));
 	pWorker->addTaskFront(std::move(moveTask));
 	return true;
 }

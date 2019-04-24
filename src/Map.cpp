@@ -16,16 +16,16 @@
 Map::Map()
 {
 	// init the m_vTiles
-	std::vector<std::shared_ptr<Tile>> vTmp;
+	std::vector<std::unique_ptr<Tile>> vTmp;
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
 	{
 		vTmp.clear();
 		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; ++j)
 		{
-			std::shared_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
-			vTmp.push_back(tmpTile);
+			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
+			vTmp.push_back(std::move(tmpTile));
 		}
-		m_vTiles.push_back(vTmp);
+		m_vTiles.push_back(std::move(vTmp));
 	}
 
 	// put in roads
@@ -38,7 +38,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 100)
+	while (count < 200)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -61,15 +61,15 @@ Map::Map()
 
 void Map::tick(const sf::Time elapsedTime)
 {
+	// cannot do this in the loop as it may make the iterators incompatible
+	std::vector<std::unique_ptr<Worker>> vWorkersToAssign;
 	// tick all the busy workers
 	for (auto it = m_vWorkersBusy.begin(); it != m_vWorkersBusy.end();)
 	{
 		if ((*it)->tick(elapsedTime))
 		{
 			// this worker has finished working
-			std::unique_ptr<Worker> pWorker = std::move(*it);
-			// see if we have any tasks for our newly freed worker
-			assignWorker(std::move(pWorker));
+			vWorkersToAssign.push_back(std::move(*it));
 			// erase from the busy vector
 			it = m_vWorkersBusy.erase(it);
 		}
@@ -77,6 +77,12 @@ void Map::tick(const sf::Time elapsedTime)
 		{
 			++it;
 		}
+	}
+
+	// reassign all the finished workers
+	for (auto it = vWorkersToAssign.begin(); it != vWorkersToAssign.end(); ++it)
+	{
+		assignWorker(std::move(*it));
 	}
 }
 
@@ -114,7 +120,8 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 
 bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 {
-	std::shared_ptr<Tile> pCurrentTile = getTile(pStructure->getTilePos());
+	// non-owning pointer guaranteed to be alive
+	Tile* pCurrentTile = getTile(pStructure->getTilePos());
 	if (pCurrentTile &&
 		pCurrentTile->setStructure(pStructure))
 	{
@@ -274,25 +281,25 @@ float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) 
 
 // returns a vector of coordinates to follow to get from source to sink
 // if no path is found, returns an empty vector
-std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
+std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 	const sf::Vector2f vfSink) const
 {
-	std::shared_ptr<Tile> pSourceTile = getTile(vfSource);
-	std::shared_ptr<Tile> pSinkTile = getTile(vfSink);
+	Tile* pSourceTile = getTile(vfSource);
+	Tile* pSinkTile = getTile(vfSink);
 
 	// set of explored nodes
-	std::unordered_set<std::shared_ptr<Tile>> sClosed;
+	std::unordered_set<Tile*> sClosed;
 	// set of nodes to be explored
-	std::unordered_set<std::shared_ptr<Tile>> sOpen = { pSourceTile };
+	std::unordered_set<Tile*> sOpen = { pSourceTile };
 
 	// nodes and their previous nodes
-	std::unordered_map<std::shared_ptr<Tile>, std::shared_ptr<Tile>> umapCameFrom;
+	std::unordered_map<Tile*, Tile*> umapCameFrom;
 
 	// cost of going from the start node to this node
-	std::unordered_map<std::shared_ptr<Tile>, float> umapGScore;
+	std::unordered_map<Tile*, float> umapGScore;
 	umapGScore.insert({ pSourceTile, 0 });
 	// estimated cost of getting to the goal
-	std::unordered_map<std::shared_ptr<Tile>, float> umapFScore;
+	std::unordered_map<Tile*, float> umapFScore;
 	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, pSinkTile->getCentrePos()) });
 
 	while (!sOpen.empty())
@@ -310,14 +317,14 @@ std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
 			}
 		}
 
-		std::shared_ptr<Tile> pCurrentTile = *openIt;
+		Tile* pCurrentTile = *openIt;
 		if (!pCurrentTile)
 			continue;
 
 		// check if the node is close enough to the end goal
 		if (getDistance(pCurrentTile->getCentrePos(), pSinkTile->getCentrePos()) <= TILE_SIZE)
 		{
-			std::vector<std::shared_ptr<Tile>> vvfPath = { pSinkTile };
+			std::vector<Tile*> vvfPath = { pSinkTile };
 			if (pSinkTile != pCurrentTile &&
 				pSourceTile != pCurrentTile)
 				vvfPath.push_back(pCurrentTile);
@@ -333,7 +340,7 @@ std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
 		sOpen.erase(openIt);
 		sClosed.insert(pCurrentTile);
 
-		std::vector<std::shared_ptr<Tile>> vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
+		std::vector<Tile*> vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
 		if (pCurrentTile == pSourceTile &&
 			pCurrentTile->getSpeedMod() > 0)
 			vTiles.push_back(pCurrentTile);
@@ -371,10 +378,10 @@ std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
 }
 
 // returns a vector of all neighbouring tiles
-std::vector<std::shared_ptr<Tile>> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
+std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 {
-	std::vector<std::shared_ptr<Tile>> vTiles;
-	std::shared_ptr<Tile> pTile;
+	std::vector<Tile*> vTiles;
+	Tile* pTile;
 
 	for (int8_t i = -1; i <= 1; ++i)
 	{
@@ -394,17 +401,17 @@ std::vector<std::shared_ptr<Tile>> Map::getNeighbouringNodes(const sf::Vector2i 
 	return vTiles;
 }
 
-std::shared_ptr<Tile> Map::getTile(const sf::Vector2f vfMapPos) const
+Tile* Map::getTile(const sf::Vector2f vfMapPos) const
 {
 	return getTile(convertMapPosToTilePos(vfMapPos));
 }
 
-std::shared_ptr<Tile> Map::getTile(const sf::Vector2i viTilePos) const
+Tile* Map::getTile(const sf::Vector2i viTilePos) const
 {
 	if (viTilePos.x < m_vTiles.size() &&
 		viTilePos.y < m_vTiles[viTilePos.x].size())
 	{
-		return m_vTiles[viTilePos.x][viTilePos.y];
+		return (m_vTiles[viTilePos.x][viTilePos.y]).get();
 	}
 	return nullptr;
 }

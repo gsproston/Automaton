@@ -17,5 +17,5 @@ private:
 	Map& m_rMap;
 
 	// non-owning pointer to the workplace
-	std::shared_ptr<Workplace> m_pWorkplace;
+	std::weak_ptr<Workplace> m_pWorkplace;
 };

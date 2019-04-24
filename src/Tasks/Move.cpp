@@ -3,7 +3,7 @@
 #include "Utils/Utils.h"
 
 Move::Move(const Map& rMap,
-	std::vector<std::shared_ptr<Tile>> vPath,
+	std::vector<Tile*> vPath,
 	const sf::Vector2f vfDestination) :
 	Task(vfDestination),
 	m_rMap(rMap),
@@ -63,17 +63,17 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 			if (m_vPath.size() > 2)
 			{
 				// many tiles left before the goal
-				m_vNodes.push_back(Node(*itTile));
+				m_vNodes.push_back(Node(**itTile));
 				m_vNodes.push_back(Node(
 					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
 					(*itTile)->getSpeedMod()
 				));
-				m_vNodes.push_back(*(itTile - 1));
+				m_vNodes.push_back(**(itTile - 1));
 			}
 			else if (m_vPath.size() > 1)
 			{
 				// two tiles left before the goal
-				m_vNodes.push_back(Node(*itTile));
+				m_vNodes.push_back(Node(**itTile));
 				m_vNodes.push_back(Node(
 					((*itTile)->getCentrePos() + (*(itTile - 1))->getCentrePos()) / 2.f,
 					(*itTile)->getSpeedMod()

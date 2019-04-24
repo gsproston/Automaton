@@ -20,16 +20,16 @@ public:
 private:
 	const float m_fDefaultSpeedMod;
 	float m_fSpeedMod;
-	std::shared_ptr<Structure> m_pStructure;
+	std::weak_ptr<Structure> m_pStructure;
 };
 
 
 struct Node
 {
-	Node(std::shared_ptr<Tile> pTile)
+	Node(Tile& rTile)
 	{
-		vfPos = pTile->getCentrePos();
-		fSpeed = pTile->getSpeedMod();
+		vfPos = rTile.getCentrePos();
+		fSpeed = rTile.getSpeedMod();
 	}
 
 	Node(const sf::Vector2f pos, const float speed)

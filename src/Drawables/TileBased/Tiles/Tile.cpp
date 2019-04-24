@@ -6,8 +6,7 @@ Tile::Tile(const sf::Vector2i viTilePos,
 	TileBased(viTilePos, viTileMapPos,
 		sf::Vector2i(1, 1)),
 	m_fDefaultSpeedMod(fSpeedMod),
-	m_fSpeedMod(fSpeedMod),
-	m_pStructure(nullptr)
+	m_fSpeedMod(fSpeedMod)
 {}
 
 Tile::~Tile() {}
@@ -20,7 +19,7 @@ float Tile::getSpeedMod() const
 
 bool Tile::setStructure(std::shared_ptr<Structure> pStructure, bool bOverwrite)
 {
-	if (m_pStructure && !bOverwrite)
+	if (!m_pStructure.expired() && !bOverwrite)
 		return false;
 
 	m_pStructure = pStructure;
