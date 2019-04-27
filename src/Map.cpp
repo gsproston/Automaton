@@ -15,6 +15,8 @@
 
 Map::Map()
 {
+	srand((unsigned int) time(0));
+
 	// init the m_vTiles
 	std::vector<std::unique_ptr<Tile>> vTmp;
 	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
@@ -38,7 +40,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 200)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -297,7 +299,7 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 
 	// cost of going from the start node to this node
 	std::unordered_map<Tile*, float> umapGScore;
-	umapGScore.insert({ pSourceTile, 0 });
+	umapGScore.insert({ pSourceTile, 0.f });
 	// estimated cost of getting to the goal
 	std::unordered_map<Tile*, float> umapFScore;
 	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, pSinkTile->getCentrePos()) });
@@ -388,6 +390,7 @@ std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 		for (int8_t j = -1; j <= 1; ++j)
 		{
 			// exclude the given tile
+			// and diagonal tiles
 			if (i == 0 && j == 0 ||
 				i != 0 && j != 0)
 				continue;

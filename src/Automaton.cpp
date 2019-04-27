@@ -20,8 +20,6 @@ int main()
 	window.setFramerateLimit(60);
 	sf::Clock clock;
 	sf::Time elapsedTime = clock.restart();
-	//map.tick(elapsedTime);
-	//elapsedTime = clock.restart();
 
 	while (window.isOpen())
 	{
