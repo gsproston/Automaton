@@ -5,9 +5,3 @@ Task::Task(const sf::Vector2f vfMapPos) :
 {}
 
 Task::~Task() {}
-
-
-sf::Vector2f Task::getMapPos() const
-{
-	return m_vfMapPos;
-}

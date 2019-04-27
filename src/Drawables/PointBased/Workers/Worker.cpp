@@ -47,13 +47,3 @@ void Worker::addVertices(std::vector<sf::Vertex>& rvVertices) const
 	rvVertices.push_back(sf::Vertex(
 		m_vfMapPos + sf::Vector2f(iSize, iSize)));
 }
-
-bool Worker::free() const
-{
-	return m_dqpTasks.empty();
-}
-
-float Worker::getSpeed() const
-{
-	return m_fSpeed;
-}

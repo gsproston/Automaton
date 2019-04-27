@@ -48,8 +48,3 @@ sf::Vector2f TileBased::getCentrePos() const
 	sf::Vector2f vfCentrePos = convertTilePosToMapPos(m_viTilePos);
 	return vfCentrePos + convertTilePosToMapPos(m_viTileDims) / 2.f;
 }
-
-sf::Vector2i TileBased::getTilePos() const
-{
-	return m_viTilePos;
-}

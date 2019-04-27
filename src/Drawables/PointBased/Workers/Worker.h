@@ -19,8 +19,8 @@ public:
 	void addTaskFront(std::unique_ptr<Task> pTask);
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 
-	bool free() const;
-	float getSpeed() const;
+	bool hasNoTasks() const { return m_dqpTasks.empty(); };
+	float getSpeed() const { return m_fSpeed; };
 
 private:
 	const float m_fSpeed; // pixels per second

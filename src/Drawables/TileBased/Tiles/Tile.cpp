@@ -12,11 +12,6 @@ Tile::Tile(const sf::Vector2i viTilePos,
 Tile::~Tile() {}
 
 
-float Tile::getSpeedMod() const
-{
-	return m_fSpeedMod;
-}
-
 bool Tile::setStructure(std::shared_ptr<Structure> pStructure, bool bOverwrite)
 {
 	if (!m_pStructure.expired() && !bOverwrite)

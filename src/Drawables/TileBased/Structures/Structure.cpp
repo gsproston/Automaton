@@ -11,9 +11,3 @@ Structure::Structure(const sf::Vector2i viTilePos,
 {}
 
 Structure::~Structure() {}
-
-
-float Structure::getSpeedMod() const
-{
-	return m_fSpeedMod;
-}

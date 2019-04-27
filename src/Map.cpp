@@ -162,7 +162,7 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 		{
 			if (*it)
 			{
-				if ((*it)->free())
+				if ((*it)->hasNoTasks())
 				{
 					// get the distance to the task
 					float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
@@ -209,7 +209,7 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 {
 	if (!m_vPendingTasks.empty() &&
-		pWorker->free())
+		pWorker->hasNoTasks())
 	{
 		// ordered map of tasks and their distances to the worker
 		std::map<float, std::vector<std::unique_ptr<Task>>::iterator> mTasks;

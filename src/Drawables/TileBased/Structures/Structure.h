@@ -13,7 +13,7 @@ public:
 		const float fSpeedMod);
 	virtual ~Structure();
 
-	float getSpeedMod() const;
+	float getSpeedMod() const { return m_fSpeedMod; };
 
 private:
 	const float m_fSpeedMod;

@@ -14,7 +14,7 @@ public:
 		const float fSpeedMod);
 	virtual ~Tile();
 
-	float getSpeedMod() const;
+	float getSpeedMod() const { return m_fSpeedMod; };
 	bool setStructure(std::shared_ptr<Structure> pStructure, bool bOverwrite = false);
 
 private:
@@ -26,7 +26,7 @@ private:
 
 struct Node
 {
-	Node(Tile& rTile)
+	Node(const Tile& rTile)
 	{
 		vfPos = rTile.getCentrePos();
 		fSpeed = rTile.getSpeedMod();

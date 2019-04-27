@@ -14,7 +14,7 @@ public:
 
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 	sf::Vector2f getCentrePos() const;
-	sf::Vector2i getTilePos() const;
+	sf::Vector2i getTilePos() const { return m_viTilePos; };
 
 protected:
 	std::array<sf::Vertex, 4> m_aVertices;

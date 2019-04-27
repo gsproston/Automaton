@@ -15,7 +15,7 @@ public:
 	// returns true if the worker can take this task
 	virtual bool validate(Worker* pWorker) = 0;
 
-	sf::Vector2f getMapPos() const;
+	sf::Vector2f getMapPos() const { return m_vfMapPos; };
 
 private:
 	const sf::Vector2f m_vfMapPos;
