@@ -22,6 +22,8 @@
     <ClCompile Include="src\Automaton.cpp" />
     <ClCompile Include="src\Drawables\Drawable.cpp" />
     <ClCompile Include="src\Drawables\PointBased\PointBased.cpp" />
+    <ClCompile Include="src\Drawables\PointBased\Resources\Resource.cpp" />
+    <ClCompile Include="src\Drawables\PointBased\Resources\Wood.cpp" />
     <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Road.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp" />
@@ -39,6 +41,8 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Drawables\Drawable.h" />
     <ClInclude Include="src\Drawables\PointBased\PointBased.h" />
+    <ClInclude Include="src\Drawables\PointBased\Resources\Resource.h" />
+    <ClInclude Include="src\Drawables\PointBased\Resources\Wood.h" />
     <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Road.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h" />

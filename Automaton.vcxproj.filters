@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Tasks">
       <UniqueIdentifier>{a6a3c665-a601-4252-9b95-a10e403d2b47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawables\PointBased\Resources">
+      <UniqueIdentifier>{b98214d4-831e-45d4-a335-7c7fe7992949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp">
@@ -82,6 +85,12 @@
     </ClCompile>
     <ClCompile Include="src\Tasks\Task.cpp">
       <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawables\PointBased\Resources\Resource.cpp">
+      <Filter>Source Files\Drawables\PointBased\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawables\PointBased\Resources\Wood.cpp">
+      <Filter>Source Files\Drawables\PointBased\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +141,12 @@
     </ClInclude>
     <ClInclude Include="src\Tasks\Move.h">
       <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\PointBased\Resources\Resource.h">
+      <Filter>Source Files\Drawables\PointBased\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\PointBased\Resources\Wood.h">
+      <Filter>Source Files\Drawables\PointBased\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

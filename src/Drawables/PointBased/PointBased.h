@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "SFML/Graphics.hpp"
 
 class PointBased
