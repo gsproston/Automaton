@@ -17,6 +17,6 @@ public:
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
 
 private:
-	std::array<sf::Vertex, 4> m_aVertices;
+	std::array<sf::Vertex, 6> m_aVertices;
 	typeEnum m_type;
 };

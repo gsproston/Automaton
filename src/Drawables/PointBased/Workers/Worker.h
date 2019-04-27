@@ -6,8 +6,6 @@
 #include "Drawables/PointBased/PointBased.h"
 #include "Tasks/Task.h"
 
-class Map;
-
 class Worker : public PointBased
 {
 public:

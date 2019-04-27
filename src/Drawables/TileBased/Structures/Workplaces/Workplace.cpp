@@ -3,7 +3,8 @@
 #include "Drawables/PointBased/Workers/Worker.h"
 #include "Utils/Utils.h"
 
-Workplace::Workplace(const sf::Vector2i viTilePos,
+Workplace::Workplace(std::vector<std::unique_ptr<Resource>>& rvResources,
+	const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
 	const sf::Vector2i viDimensions,
 	const sf::Vector2f vfWorkerPos):
@@ -11,6 +12,7 @@ Workplace::Workplace(const sf::Vector2i viTilePos,
 		viTileMapPos,
 		viDimensions,
 		0),
+	m_rvResources(rvResources),
 	m_vfWorkerPos(vfWorkerPos)
 {}
 

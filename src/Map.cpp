@@ -55,7 +55,7 @@ Map::Map()
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		std::shared_ptr<Tree> tmpTree(new Tree(sf::Vector2i(i, j)));
+		std::shared_ptr<Tree> tmpTree(new Tree(m_vResources, sf::Vector2i(i, j)));
 		if (addWorkplace(std::move(tmpTree)))
 			++count;
 	}
@@ -118,10 +118,26 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	{
 		m_vWorkersFree[i]->addVertices(rvVertices);
 	}
+
+	// add resources
+	for (uint32_t i = 0; i < m_vResources.size(); ++i)
+	{
+		m_vResources[i]->addVertices(rvVertices);
+	}
+}
+
+bool Map::addResource(std::unique_ptr<Resource> pResource)
+{
+	if (!pResource)
+		return false;
+	m_vResources.push_back(std::move(pResource));
+	return true;
 }
 
 bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 {
+	if (!pStructure)
+		return false;
 	// non-owning pointer guaranteed to be alive
 	Tile* pCurrentTile = getTile(pStructure->getTilePos());
 	if (pCurrentTile &&
@@ -135,6 +151,8 @@ bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 
 bool Map::addWorker(std::unique_ptr<Worker> pWorker)
 {
+	if (!pWorker)
+		return false;
 	assignWorker(std::move(pWorker));
 	return true;
 }
@@ -152,6 +170,9 @@ bool Map::addWorkplace(std::shared_ptr<Workplace> pWorkplace)
 
 bool Map::assignTask(std::unique_ptr<Task> pTask)
 {
+	if (!pTask)
+		return false;
+
 	if (!m_vWorkersFree.empty())
 	{
 		// ordered map of workers and their distances to the task
@@ -208,6 +229,9 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 
 bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 {
+	if (!pWorker)
+		return false;
+
 	if (!m_vPendingTasks.empty() &&
 		pWorker->hasNoTasks())
 	{
