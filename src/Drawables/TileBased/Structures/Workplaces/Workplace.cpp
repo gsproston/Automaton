@@ -22,5 +22,5 @@ Workplace::~Workplace() {}
 // returns the worker position on the map
 sf::Vector2f Workplace::getWorkerPos() const
 {
-	return convertTilePosToMapPos(m_viTilePos) + m_vfWorkerPos * (float) TILE_SIZE;
+	return utils::convertTilePosToMapPos(m_viTilePos) + m_vfWorkerPos * (float) TILE_SIZE;
 }

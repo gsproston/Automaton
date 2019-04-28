@@ -9,10 +9,10 @@ TileBased::TileBased(const sf::Vector2i viTilePos,
 	m_viTileDims(viTileDims)
 {
 	// convert to map position
-	sf::Vector2f vfMapPos = convertTilePosToMapPos(viTilePos);
-	sf::Vector2f vfTileMapPos = convertTileMapPosToMapPos(viTileMapPos);
-	sf::Vector2f vfTileDims = convertTilePosToMapPos(viTileDims);
-	sf::Vector2f vfTileMapDims = convertTileMapPosToMapPos(viTileDims);
+	sf::Vector2f vfMapPos = utils::convertTilePosToMapPos(viTilePos);
+	sf::Vector2f vfTileMapPos = utils::convertTileMapPosToMapPos(viTileMapPos);
+	sf::Vector2f vfTileDims = utils::convertTilePosToMapPos(viTileDims);
+	sf::Vector2f vfTileMapDims = utils::convertTileMapPosToMapPos(viTileDims);
 
 	// init the vertices
 	m_aVertices[0] = sf::Vertex(
@@ -45,6 +45,6 @@ void TileBased::addVertices(std::vector<sf::Vertex>& rvVertices) const
 
 sf::Vector2f TileBased::getCentrePos() const
 {
-	sf::Vector2f vfCentrePos = convertTilePosToMapPos(m_viTilePos);
-	return vfCentrePos + convertTilePosToMapPos(m_viTileDims) / 2.f;
+	sf::Vector2f vfCentrePos = utils::convertTilePosToMapPos(m_viTilePos);
+	return vfCentrePos + utils::convertTilePosToMapPos(m_viTileDims) / 2.f;
 }

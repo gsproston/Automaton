@@ -186,7 +186,7 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 				if ((*it)->hasNoTasks())
 				{
 					// get the distance to the task
-					float dist = getDistance((*it)->m_vfMapPos, pTask->getMapPos());
+					float dist = (*it)->getDistance(pTask->getMapPos());
 					// add it to the map
 					mWorkers.insert({ dist, it });
 					++it;
@@ -244,7 +244,7 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 			if (*it)
 			{
 				// get the distance to the worker
-				float dist = getDistance((*it)->getMapPos(), pWorker->m_vfMapPos);
+				float dist = pWorker->getDistance((*it)->getMapPos());
 				// add it to the map
 				mTasks.insert({ dist, it });
 				++it;
@@ -351,8 +351,11 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 		if (!pCurrentTile)
 			continue;
 
+		const sf::Vector2i viDiff = pCurrentTile->getTilePos() - pSinkTile->getTilePos();
 		// check if the node is close enough to the end goal
-		if (getDistance(pCurrentTile->getCentrePos(), pSinkTile->getCentrePos()) <= TILE_SIZE)
+		if ((viDiff.x == 0 && abs(viDiff.y) == 1) ||
+			(viDiff.y == 0 && abs(viDiff.x) == 1) ||
+			(viDiff.x == 0 && viDiff.y == 0))
 		{
 			std::vector<Tile*> vvfPath = { pSinkTile };
 			if (pSinkTile != pCurrentTile &&
@@ -382,8 +385,8 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 
 			// get the distance from the start node
 			float fTmpGScore = umapGScore[pCurrentTile] + 
-				getDistance(pCurrentTile->getCentrePos(), (*it)->getCentrePos()) /	// divide by the speed mod
-				((pCurrentTile->getSpeedMod() + (*it)->getSpeedMod()) / 2.f);		// take the average of the two speed mods
+				utils::getDistance(pCurrentTile->getCentrePos(), (*it)->getCentrePos()) /	// divide by the speed mod
+				((pCurrentTile->getSpeedMod() + (*it)->getSpeedMod()) / 2.f);				// take the average of the two speed mods
 
 			if (sOpen.find(*it) == sOpen.end())
 				// this node is new
@@ -434,7 +437,7 @@ std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 
 Tile* Map::getTile(const sf::Vector2f vfMapPos) const
 {
-	return getTile(convertMapPosToTilePos(vfMapPos));
+	return getTile(utils::convertMapPosToTilePos(vfMapPos));
 }
 
 Tile* Map::getTile(const sf::Vector2i viTilePos) const

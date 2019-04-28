@@ -25,12 +25,12 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 			// we have a node, move towards it
 			auto itNode = m_vNodes.begin();
 			// get the distance to the next node
-			float fDist = getDistance(rWorker.m_vfMapPos, (*itNode).vfPos);
+			float fDist = rWorker.getDistance((*itNode).vfPos);
 
 			if (fDist < fRemainingDist * (*itNode).fSpeed)
 			{
 				// we have enough speed to get to the node
-				rWorker.m_vfMapPos = (*itNode).vfPos;
+				rWorker.move((*itNode).vfPos - rWorker.getMapPos());
 				fRemainingDist -= fDist / (*itNode).fSpeed;
 				// remove the node
 				m_vNodes.erase(itNode);
@@ -38,8 +38,8 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 			else
 			{
 				// move towards the node
-				sf::Vector2f vfDelta((*itNode).vfPos - rWorker.m_vfMapPos);
-				rWorker.m_vfMapPos += vfDelta * (fRemainingDist / fDist) * (*itNode).fSpeed;
+				sf::Vector2f vfDelta((*itNode).vfPos - rWorker.getMapPos());
+				rWorker.move(vfDelta * (fRemainingDist / fDist) * (*itNode).fSpeed);
 				return false;
 			}
 		}
@@ -55,7 +55,7 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 				// the tile is not passable, recalculate the path
 				m_vPath.clear();	// clear the tiles
 				m_vNodes.clear();	// clear the nodes
-				m_vPath = m_rMap.getPath(rWorker.m_vfMapPos, m_vfDestination);
+				m_vPath = m_rMap.getPath(rWorker.getMapPos(), m_vfDestination);
 				continue;
 			}
 

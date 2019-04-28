@@ -18,7 +18,7 @@ bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 		return true;
 
 	// we have work, are we close to it?
-	if (rWorker.m_vfMapPos == pWorkplace->getWorkerPos())
+	if (rWorker.getMapPos() == pWorkplace->getWorkerPos())
 	{
 		// we are! so we can work it
 		if (pWorkplace->work(elapsedTime))
@@ -31,7 +31,7 @@ bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 
 	// create a task to move to this place
 	std::vector<Tile*> vpPath = 
-		m_rMap.getPath(rWorker.m_vfMapPos, pWorkplace->getWorkerPos());
+		m_rMap.getPath(rWorker.getMapPos(), pWorkplace->getWorkerPos());
 
 	if (vpPath.empty())
 	{
@@ -55,12 +55,12 @@ bool Work::validate(Worker* pWorker)
 	if (!(pWorkplace = m_pWorkplace.lock()) || !pWorker)
 		return false;
 	// fine if the worker is at the workplace
-	if (pWorker->m_vfMapPos == pWorkplace->getWorkerPos())
+	if (pWorker->getMapPos() == pWorkplace->getWorkerPos())
 		return true;
 
 	// calculate the path to the workplace
 	std::vector<Tile*> vpPath =
-		m_rMap.getPath(pWorker->m_vfMapPos, pWorkplace->getWorkerPos());
+		m_rMap.getPath(pWorker->getMapPos(), pWorkplace->getWorkerPos());
 	if (vpPath.empty())
 		// can't find a path, so can't work this
 		return false;
