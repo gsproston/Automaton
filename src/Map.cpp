@@ -332,14 +332,18 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 	{
 		// get the node with the lowest score
 		auto openIt = sOpen.begin();
-		float minScore = umapFScore[*sOpen.begin()];
-		for (auto it = sOpen.begin(); it != sOpen.end(); ++it)
+		float minScore = umapFScore[*openIt];
 		{
-			float newScore = umapFScore[*it];
-			if (minScore > newScore)
+			auto it = openIt;
+			++it;
+			for (; it != sOpen.end(); ++it)
 			{
-				minScore = newScore;
-				openIt = it;
+				float newScore = umapFScore[*it];
+				if (minScore > newScore)
+				{
+					minScore = newScore;
+					openIt = it;
+				}
 			}
 		}
 
@@ -395,7 +399,7 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 			else if (pCurrentTile->getSpeedMod() > 0)
 				umapCameFrom.insert({ *it, pCurrentTile });
 			umapGScore[*it] = fTmpGScore;
-			umapFScore[*it] = umapGScore[*it] + 
+			umapFScore[*it] = fTmpGScore +
 				getHeuristic((*it)->getCentrePos(), pSinkTile->getCentrePos());
 		}
 	}
