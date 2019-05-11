@@ -55,7 +55,7 @@ Map::Map()
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
-		std::shared_ptr<Tree> tmpTree(new Tree(m_vResources, sf::Vector2i(i, j)));
+		std::shared_ptr<Tree> tmpTree(new Tree(*this, sf::Vector2i(i, j)));
 		if (addWorkplace(std::move(tmpTree)))
 			++count;
 	}
@@ -278,15 +278,11 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 }
 
 // returns true if we were able to delete the structure
-bool Map::removeStructure(const std::shared_ptr<Structure> pStructure)
+bool Map::removeStructure(Structure& rStructure)
 {
-	if (!pStructure)
-		return false;
-
 	for (auto it = m_vStructures.begin(); it != m_vStructures.end(); ++it)
 	{
-		if (*it &&
-			*it == pStructure)
+		if ((*it).get() == &rStructure)
 		{
 			m_vStructures.erase(it);
 			return true;

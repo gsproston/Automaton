@@ -19,15 +19,8 @@ bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 
 	// we have work, are we close to it?
 	if (rWorker.getMapPos() == pWorkplace->getWorkerPos())
-	{
 		// we are! so we can work it
-		if (pWorkplace->work(elapsedTime))
-		{
-			m_rMap.removeStructure(pWorkplace);
-			return true;
-		}
-		return false;
-	}
+		return pWorkplace->work(elapsedTime);
 
 	// create a task to move to this place
 	std::vector<Tile*> vpPath = 

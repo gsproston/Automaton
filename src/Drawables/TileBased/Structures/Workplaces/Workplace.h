@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Drawables/PointBased/Resources/Resource.h"
 #include "Drawables/TileBased/Structures/Structure.h"
+
+class Map;
 
 class Workplace: public Structure
 {
 public:
-	Workplace(std::vector<std::unique_ptr<Resource>>& rvResources,
+	Workplace(Map& rMap,
 		const sf::Vector2i viTilePos,
 		const sf::Vector2i viTileMapPos,
 		const sf::Vector2i viDimensions,
@@ -19,7 +20,7 @@ public:
 
 protected:
 	// reference to the resource vector owned by Map
-	std::vector<std::unique_ptr<Resource>>& m_rvResources;
+	Map& m_rMap;
 
 private:
 	// percent offset to where the worker should go

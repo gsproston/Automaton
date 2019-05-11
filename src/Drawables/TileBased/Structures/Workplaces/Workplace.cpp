@@ -1,9 +1,10 @@
 #include "Workplace.h"
 
 #include "Drawables/PointBased/Workers/Worker.h"
+#include "Map.h"
 #include "Utils/Utils.h"
 
-Workplace::Workplace(std::vector<std::unique_ptr<Resource>>& rvResources,
+Workplace::Workplace(Map& rMap,
 	const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
 	const sf::Vector2i viDimensions,
@@ -12,7 +13,7 @@ Workplace::Workplace(std::vector<std::unique_ptr<Resource>>& rvResources,
 		viTileMapPos,
 		viDimensions,
 		0),
-	m_rvResources(rvResources),
+	m_rMap(rMap),
 	m_vfWorkerPos(vfWorkerPos)
 {}
 

@@ -5,7 +5,7 @@
 class Tree : public Workplace
 {
 public:
-	Tree(std::vector<std::unique_ptr<Resource>>& rvResources,
+	Tree(Map& rMap,
 		const sf::Vector2i viTIlePos);
 
 	bool work(const sf::Time elapsedTime);

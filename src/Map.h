@@ -24,7 +24,7 @@ public:
 	bool assignTask(std::unique_ptr<Task> pTask);
 
 	bool addResource(std::unique_ptr<Resource> pResource);
-	bool removeStructure(const std::shared_ptr<Structure> pStructure);
+	bool removeStructure(Structure& rStructure);
 
 	// pathfinding
 	std::vector<Tile*> getPath(const sf::Vector2f vfSource,

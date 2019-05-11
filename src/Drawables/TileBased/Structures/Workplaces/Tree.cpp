@@ -2,10 +2,11 @@
 
 #include "Constants.h"
 #include "Drawables/PointBased/Resources/Wood.h"
+#include "Map.h"
 
-Tree::Tree(std::vector<std::unique_ptr<Resource>>& rvResources,
+Tree::Tree(Map& rMap,
 	const sf::Vector2i viTilePos) :
-	Workplace(rvResources,
+	Workplace(rMap,
 		viTilePos,
 		sf::Vector2i(0, 1),
 		sf::Vector2i(1, 1),
@@ -20,7 +21,8 @@ bool Tree::work(const sf::Time elapsedTime)
 	if (m_fHealth <= 0)
 	{
 		std::unique_ptr<Wood> pWood(new Wood(getCentrePos()));
-		m_rvResources.push_back(std::move(pWood));
+		m_rMap.addResource(std::move(pWood));
+		m_rMap.removeStructure(*this);
 		return true;
 	}
 	return false;
