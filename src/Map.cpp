@@ -8,6 +8,7 @@
 #include "Utils/Utils.h"
 
 #include "Drawables/TileBased/Structures/Road.h"
+#include "Drawables/TileBased/Structures/Storage/Stockpile.h"
 #include "Drawables/TileBased/Structures/Workplaces/Tree.h"
 #include "Drawables/TileBased/Tiles/Grass.h"
 
@@ -47,6 +48,17 @@ Map::Map()
 		std::unique_ptr<Worker> tmpWorker(new Worker(sf::Vector2f((float)i, (float)j)));
 		addWorker(std::move(tmpWorker));
 		++count;
+	}
+
+	// init the stockpiles
+	count = 0;
+	while (count < 3)
+	{
+		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
+		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		std::shared_ptr<Stockpile> tmpStock(new Stockpile(sf::Vector2i(i, j)));
+		if (addStructure(std::move(tmpStock)))
+			++count;
 	}
 
 	// init the workplaces

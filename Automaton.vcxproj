@@ -26,6 +26,8 @@
     <ClCompile Include="src\Drawables\PointBased\Resources\Wood.cpp" />
     <ClCompile Include="src\Drawables\PointBased\Workers\Worker.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Road.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Structures\Storage\Stockpile.cpp" />
+    <ClCompile Include="src\Drawables\TileBased\Structures\Storage\Storage.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Structure.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Tree.cpp" />
     <ClCompile Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.cpp" />
@@ -45,6 +47,8 @@
     <ClInclude Include="src\Drawables\PointBased\Resources\Wood.h" />
     <ClInclude Include="src\Drawables\PointBased\Workers\Worker.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Road.h" />
+    <ClInclude Include="src\Drawables\TileBased\Structures\Storage\Stockpile.h" />
+    <ClInclude Include="src\Drawables\TileBased\Structures\Storage\Storage.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Structure.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Tree.h" />
     <ClInclude Include="src\Drawables\TileBased\Structures\Workplaces\Workplace.h" />

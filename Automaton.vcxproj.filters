@@ -39,6 +39,9 @@
     <Filter Include="Source Files\Drawables\PointBased\Resources">
       <UniqueIdentifier>{b98214d4-831e-45d4-a335-7c7fe7992949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawables\TileBased\Structures\Storage">
+      <UniqueIdentifier>{bfbaa2f1-b95a-4e2a-a346-bd538b94c666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Automaton.cpp">
@@ -91,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="src\Drawables\PointBased\Resources\Wood.cpp">
       <Filter>Source Files\Drawables\PointBased\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawables\TileBased\Structures\Storage\Storage.cpp">
+      <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawables\TileBased\Structures\Storage\Stockpile.cpp">
+      <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +156,12 @@
     </ClInclude>
     <ClInclude Include="src\Drawables\PointBased\Resources\Wood.h">
       <Filter>Source Files\Drawables\PointBased\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Structures\Storage\Storage.h">
+      <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawables\TileBased\Structures\Storage\Stockpile.h">
+      <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
