@@ -44,3 +44,13 @@ void Resource::addVertices(std::vector<sf::Vertex>& rvVertices) const
 		rvVertices.push_back(m_aVertices[i]);
 	}
 }
+
+void Resource::move(const sf::Vector2f vfDist)
+{
+	PointBased::move(vfDist);
+	// move vertices
+	for (uint8_t i = 0; i < m_aVertices.size(); ++i)
+	{
+		m_aVertices[i].position += vfDist;
+	}
+}

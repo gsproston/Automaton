@@ -15,6 +15,7 @@ public:
 	virtual ~Resource();
 
 	void addVertices(std::vector<sf::Vertex>& rvVertices) const;
+	void move(const sf::Vector2f vfDist);
 
 private:
 	std::array<sf::Vertex, 6> m_aVertices;

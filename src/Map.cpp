@@ -12,11 +12,12 @@
 #include "Drawables/TileBased/Structures/Workplaces/Tree.h"
 #include "Drawables/TileBased/Tiles/Grass.h"
 
+#include "Tasks/Store.h"
 #include "Tasks/Work.h"
 
 Map::Map()
 {
-	srand((unsigned int) time(0));
+	//srand((unsigned int) time(0));
 
 	// init the m_vTiles
 	std::vector<std::unique_ptr<Tile>> vTmp;
@@ -57,7 +58,7 @@ Map::Map()
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::shared_ptr<Stockpile> tmpStock(new Stockpile(sf::Vector2i(i, j)));
-		if (addStructure(std::move(tmpStock)))
+		if (addStorage(std::move(tmpStock)))
 			++count;
 	}
 
@@ -138,18 +139,59 @@ void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
 	}
 }
 
-bool Map::addResource(std::unique_ptr<Resource> pResource)
+bool Map::addResource(std::shared_ptr<Resource> pResource)
 {
 	if (!pResource)
 		return false;
-	m_vResources.push_back(std::move(pResource));
+	m_vResources.push_back(pResource);
+	dropResource(pResource);
 	return true;
+}
+
+bool Map::dropResource(std::shared_ptr<Resource> pResource)
+{
+	if (!pResource)
+		return false;
+
+	// first, check if we have a storage bin to store this in
+	std::shared_ptr<Storage> pStorage;
+	std::shared_ptr<StorageBin> pBin;
+	for (auto it = m_vStorage.begin(); it != m_vStorage.end(); ++it)
+	{
+		// TODO find closest
+		if ((pStorage = (*it).lock()) &&
+			pStorage)
+		{
+			pBin = pStorage->available();
+			if (pBin &&
+				pBin->reserve())
+			{
+				std::unique_ptr<Store> pStore(new Store(*this, pResource, pBin));
+				assignTask(std::move(pStore));
+				return true;
+			}
+		}
+	}
+	m_vResourcesPending.push_back(pResource);
+	return true;
+}
+
+bool Map::addStorage(std::shared_ptr<Storage> pStorage)
+{
+	// TODO look for pending resources
+	if (addStructure(pStorage))
+	{
+		m_vStorage.push_back(pStorage);
+		return true;
+	}
+	return false;
 }
 
 bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 {
 	if (!pStructure)
 		return false;
+
 	// non-owning pointer guaranteed to be alive
 	Tile* pCurrentTile = getTile(pStructure->getTilePos());
 	if (pCurrentTile &&
@@ -220,7 +262,7 @@ bool Map::assignTask(std::unique_ptr<Task> pTask)
 		// now, cycle over our map, returning the first worker who can reach the task
 		for (auto it = mWorkers.begin(); it != mWorkers.end(); ++it)
 		{
-			if (pTask->validate((*(*it).second).get()))
+			if (pTask->validate(*(*(*it).second)))
 			{
 				// assign the task to the worker
 				(*(*it).second)->addTaskBack(std::move(pTask));
@@ -271,7 +313,7 @@ bool Map::assignWorker(std::unique_ptr<Worker> pWorker)
 		// now, cycle over our map, returning the first tasks which the worker can reach
 		for (auto it = mTasks.begin(); it != mTasks.end(); ++it)
 		{
-			if ((*(*it).second)->validate(pWorker.get()))
+			if ((*(*it).second)->validate(*pWorker))
 			{
 				// assign the task to the worker
 				pWorker->addTaskBack(std::move(*(*it).second));

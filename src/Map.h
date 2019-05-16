@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Drawables/PointBased/Resources/Resource.h"
+#include "Drawables/TileBased/Structures/Storage/Storage.h"
 #include "Drawables/TileBased/Structures/Structure.h"
 #include "Drawables/TileBased/Tiles/Tile.h"
 #include "Drawables/PointBased/Workers/Worker.h"
@@ -23,7 +24,8 @@ public:
 
 	bool assignTask(std::unique_ptr<Task> pTask);
 
-	bool addResource(std::unique_ptr<Resource> pResource);
+	bool addResource(std::shared_ptr<Resource> pResource);
+	bool dropResource(std::shared_ptr<Resource> pResource);
 	bool removeStructure(Structure& rStructure);
 
 	// pathfinding
@@ -31,14 +33,19 @@ public:
 		const sf::Vector2f vfSink) const;
 
 private:
-	std::vector<std::unique_ptr<Resource>> m_vResources;
 	std::vector<std::shared_ptr<Structure>> m_vStructures;
 	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
+
+	std::vector<std::shared_ptr<Resource>> m_vResources;
+	std::vector<std::weak_ptr<Resource>> m_vResourcesPending;
 	std::vector<std::unique_ptr<Worker>> m_vWorkersBusy;
 	std::vector<std::unique_ptr<Worker>> m_vWorkersFree;
 
+	std::vector<std::weak_ptr<Storage>> m_vStorage;
+
 	std::vector<std::unique_ptr<Task>> m_vPendingTasks;
 
+	bool addStorage(std::shared_ptr<Storage> pStorage);
 	bool addStructure(std::shared_ptr<Structure> pStructure);
 	bool addWorker(std::unique_ptr<Worker> pWorker);
 	bool addWorkplace(std::shared_ptr<Workplace> pWorkplace);

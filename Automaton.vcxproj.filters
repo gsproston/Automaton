@@ -101,6 +101,12 @@
     <ClCompile Include="src\Drawables\TileBased\Structures\Storage\Stockpile.cpp">
       <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tasks\Store.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tasks\PickUp.cpp">
+      <Filter>Source Files\Tasks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Map.h">
@@ -162,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="src\Drawables\TileBased\Structures\Storage\Stockpile.h">
       <Filter>Source Files\Drawables\TileBased\Structures\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tasks\Store.h">
+      <Filter>Source Files\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tasks\PickUp.h">
+      <Filter>Source Files\Tasks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

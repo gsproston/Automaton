@@ -20,7 +20,7 @@ bool Tree::work(const sf::Time elapsedTime)
 	m_fHealth -= elapsedTime.asSeconds();
 	if (m_fHealth <= 0)
 	{
-		std::unique_ptr<Wood> pWood(new Wood(getCentrePos()));
+		std::shared_ptr<Wood> pWood(new Wood(getCentrePos()));
 		m_rMap.addResource(std::move(pWood));
 		m_rMap.removeStructure(*this);
 		return true;

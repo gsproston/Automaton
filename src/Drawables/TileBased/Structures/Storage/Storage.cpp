@@ -9,9 +9,22 @@ Storage::Storage(const sf::Vector2i viTilePos,
 	// create bins for each position given
 	for (auto it = vvfBinPos.begin(); it != vvfBinPos.end(); ++it)
 	{
-		std::unique_ptr<StorageBin> pBin(new StorageBin(*it));
+		std::unique_ptr<StorageBin> pBin(new StorageBin((*it) + getCentrePos()));
 		m_vpBins.push_back(std::move(pBin));
 	}
 }
 
 Storage::~Storage() {}
+
+
+std::shared_ptr<StorageBin> Storage::available() const
+{
+	// cycle over the storage bins, returning the first one that's free
+	for (auto it = m_vpBins.begin(); it != m_vpBins.end(); ++it)
+	{
+		if ((*it) &&
+			(*it)->available())
+			return (*it);
+	}
+	return nullptr;
+}

@@ -36,6 +36,8 @@
     <ClCompile Include="src\Drawables\TileBased\Tiles\Tile.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\Tasks\Move.cpp" />
+    <ClCompile Include="src\Tasks\PickUp.cpp" />
+    <ClCompile Include="src\Tasks\Store.cpp" />
     <ClCompile Include="src\Tasks\Task.cpp" />
     <ClCompile Include="src\Tasks\Work.cpp" />
   </ItemGroup>
@@ -57,6 +59,8 @@
     <ClInclude Include="src\Drawables\TileBased\Tiles\Tile.h" />
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\Tasks\Move.h" />
+    <ClInclude Include="src\Tasks\PickUp.h" />
+    <ClInclude Include="src\Tasks\Store.h" />
     <ClInclude Include="src\Tasks\Task.h" />
     <ClInclude Include="src\Tasks\Work.h" />
     <ClInclude Include="src\Utils\Utils.h" />

@@ -47,3 +47,27 @@ void Worker::addVertices(std::vector<sf::Vertex>& rvVertices) const
 	rvVertices.push_back(sf::Vertex(
 		m_vfMapPos + sf::Vector2f(iSize, iSize)));
 }
+
+bool Worker::holdsResource(const Resource& rResource) const
+{
+	std::shared_ptr<Resource> pResource;
+	if (!(pResource = m_pResource.lock()))
+		return false;
+	return (pResource.get() == &rResource);
+}
+
+void Worker::move(const sf::Vector2f vfDist)
+{
+	PointBased::move(vfDist);
+	std::shared_ptr<Resource> pResource;
+	if (pResource = m_pResource.lock())
+		pResource->move(vfDist);
+}
+
+bool Worker::pickUp(std::shared_ptr<Resource> pResource)
+{
+	if (!pResource || holdsResource())
+		return false;
+	m_pResource = pResource;
+	return true;
+}

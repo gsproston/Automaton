@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Task.h"
+
 #include "Drawables/TileBased/Structures/Workplaces/Workplace.h"
 #include "Map.h"
-#include "Task.h"
 
 class Work : public Task
 {
@@ -11,7 +12,7 @@ public:
 		std::shared_ptr<Workplace> pWorkplace);
 
 	bool tick(const sf::Time elapsedTime, Worker& rWorker);
-	bool validate(Worker* pWorker);
+	bool validate(Worker& rWorker);
 
 private:
 	Map& m_rMap;

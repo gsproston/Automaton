@@ -13,10 +13,10 @@ public:
 	// returns true when the task is to be deleted
 	virtual bool tick(const sf::Time elapsedTime, Worker& rWorker) = 0;
 	// returns true if the worker can take this task
-	virtual bool validate(Worker* pWorker) = 0;
+	virtual bool validate(Worker& rWorker) = 0;
 
 	sf::Vector2f getMapPos() const { return m_vfMapPos; };
 
-private:
+protected:
 	const sf::Vector2f m_vfMapPos;
 };

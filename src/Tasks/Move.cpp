@@ -93,7 +93,7 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 	return true;
 }
 
-bool Move::validate(Worker* pWorker)
+bool Move::validate(Worker& rWorker)
 {
-	return (pWorker);
+	return true;
 }
