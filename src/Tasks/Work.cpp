@@ -23,19 +23,14 @@ bool Work::tick(const sf::Time elapsedTime, Worker& rWorker)
 		return pWorkplace->work(elapsedTime);
 
 	// create a task to move to this place
-	std::vector<Tile*> vpPath = 
-		m_rMap.getPath(rWorker.getMapPos(), m_vfMapPos);
-
-	if (vpPath.empty())
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, m_vfMapPos));
+	if (!pMoveTask->validate(rWorker))
 	{
 		// cannot find a path, assign someone else to work this place
 		std::unique_ptr<Work> pWorkTask(new Work(m_rMap, pWorkplace));
 		m_rMap.assignTask(std::move(pWorkTask));
 		return true;
 	}
-
-	// otherwise, move to the workplace
-	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_vfMapPos));
 	rWorker.addTaskFront(std::move(pMoveTask));
 	return false;
 }
@@ -52,13 +47,6 @@ bool Work::validate(Worker& rWorker)
 		return true;
 
 	// calculate the path to the workplace
-	std::vector<Tile*> vpPath =
-		m_rMap.getPath(rWorker.getMapPos(), m_vfMapPos);
-	if (vpPath.empty())
-		// can't find a path, so can't work this
-		return false;
-	// otherwise, we have a path to the workplace
-	std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_vfMapPos));
-	rWorker.addTaskFront(std::move(moveTask));
-	return true;
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, m_vfMapPos));
+	return pMoveTask->validate(rWorker);
 }

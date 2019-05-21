@@ -3,11 +3,9 @@
 #include "Utils/Utils.h"
 
 Move::Move(const Map& rMap,
-	std::vector<Tile*> vPath,
 	const sf::Vector2f vfDestination) :
 	Task(vfDestination),
 	m_rMap(rMap),
-	m_vPath(vPath),
 	m_vfDestination(vfDestination)
 {}
 
@@ -95,5 +93,6 @@ bool Move::tick(const sf::Time elapsedTime, Worker& rWorker)
 
 bool Move::validate(Worker& rWorker)
 {
-	return true;
+	m_vPath = m_rMap.getPath(rWorker.getMapPos(), m_vfDestination);
+	return !m_vPath.empty();
 }

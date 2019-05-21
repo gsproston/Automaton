@@ -22,19 +22,15 @@ bool PickUp::tick(const sf::Time elapsedTime, Worker& rWorker)
 		// we are! so pick it up
 		return rWorker.pickUp(pResource);
 
-	// create a task to move to this place
-	std::vector<Tile*> vpPath =
-		m_rMap.getPath(rWorker.getMapPos(), m_vfMapPos);
-
-	if (vpPath.empty())
+	// if we reach here, we're not close to the resource
+	// create a task to move to this resource
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, m_vfMapPos));
+	if (!pMoveTask->validate(rWorker))
 	{
-		// cannot find a path, drop the resource
+		// cannot find a path, have the map drop the resource
 		m_rMap.dropResource(pResource);
 		return true;
 	}
-
-	// otherwise, move to the resource
-	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, vpPath, m_vfMapPos));
 	rWorker.addTaskFront(std::move(pMoveTask));
 	return false;
 }
@@ -51,14 +47,7 @@ bool PickUp::validate(Worker& rWorker)
 		rWorker.holdsResource(*pResource))
 		return true;
 
-	// calculate the path to the workplace
-	std::vector<Tile*> vpPath =
-		m_rMap.getPath(rWorker.getMapPos(), m_vfMapPos);
-	if (vpPath.empty())
-		// can't find a path, so can't work this
-		return false;
-	// otherwise, we have a path to the workplace
-	std::unique_ptr<Move> moveTask(new Move(m_rMap, vpPath, m_vfMapPos));
-	rWorker.addTaskFront(std::move(moveTask));
-	return true;
+	// see if we can reach the resource
+	std::unique_ptr<Move> pMoveTask(new Move(m_rMap, m_vfMapPos));
+	return pMoveTask->validate(rWorker);
 }

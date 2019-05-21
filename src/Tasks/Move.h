@@ -7,7 +7,6 @@ class Move : public Task
 {
 public:
 	Move(const Map& rMap,
-		std::vector<Tile*> vPath,
 		const sf::Vector2f vfDestination);
 
 	bool tick(const sf::Time elapsedTime, Worker& rWorker);
