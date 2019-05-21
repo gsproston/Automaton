@@ -42,7 +42,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 1)
+	while (count < 16)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -64,7 +64,7 @@ Map::Map()
 
 	// init the workplaces
 	count = 0;
-	while (count < 1)
+	while (count < 16)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);

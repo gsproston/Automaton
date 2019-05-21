@@ -1,5 +1,7 @@
 #include "Storage.h"
 
+#include "Constants.h"
+
 Storage::Storage(const sf::Vector2i viTilePos,
 	const sf::Vector2i viTileMapPos,
 	const sf::Vector2i viTileDims,
@@ -9,7 +11,7 @@ Storage::Storage(const sf::Vector2i viTilePos,
 	// create bins for each position given
 	for (auto it = vvfBinPos.begin(); it != vvfBinPos.end(); ++it)
 	{
-		std::unique_ptr<StorageBin> pBin(new StorageBin((*it) + getCentrePos()));
+		std::unique_ptr<StorageBin> pBin(new StorageBin((*it) * (float)TILE_SIZE + getCentrePos()));
 		m_vpBins.push_back(std::move(pBin));
 	}
 }
