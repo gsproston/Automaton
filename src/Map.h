@@ -25,7 +25,7 @@ public:
 	bool assignTask(std::unique_ptr<Task> pTask);
 
 	bool addResource(std::shared_ptr<Resource> pResource);
-	bool dropResource(std::shared_ptr<Resource> pResource);
+	bool storeResource(std::shared_ptr<Resource> pResource);
 	bool removeStructure(Structure& rStructure);
 
 	// pathfinding

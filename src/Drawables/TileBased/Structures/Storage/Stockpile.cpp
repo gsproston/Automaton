@@ -7,7 +7,7 @@ Stockpile::Stockpile(const sf::Vector2i viTilePos) :
 		m_vvfBinPos)
 {}
 
-std::vector<sf::Vector2f> createBins()
+static std::vector<sf::Vector2f> createBins()
 {
 	std::vector<sf::Vector2f> vvfBinPos;
 	for (int x = -2; x < 2; ++x)

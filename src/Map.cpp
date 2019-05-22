@@ -42,7 +42,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 16)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -53,7 +53,7 @@ Map::Map()
 
 	// init the stockpiles
 	count = 0;
-	while (count < 1)
+	while (count < 5)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -64,7 +64,7 @@ Map::Map()
 
 	// init the workplaces
 	count = 0;
-	while (count < 16)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -144,24 +144,45 @@ bool Map::addResource(std::shared_ptr<Resource> pResource)
 	if (!pResource)
 		return false;
 	m_vResources.push_back(pResource);
-	dropResource(pResource);
+	storeResource(pResource);
 	return true;
 }
 
-bool Map::dropResource(std::shared_ptr<Resource> pResource)
+bool Map::storeResource(std::shared_ptr<Resource> pResource)
 {
 	if (!pResource)
 		return false;
 
-	// first, check if we have a storage bin to store this in
-	std::shared_ptr<Storage> pStorage;
-	std::shared_ptr<StorageBin> pBin;
-	for (auto it = m_vStorage.begin(); it != m_vStorage.end(); ++it)
+	if (!m_vStorage.empty())
 	{
-		// TODO find closest
-		if ((pStorage = (*it).lock()) &&
-			pStorage)
+		std::shared_ptr<Storage> pStorage;
+		// ordered map of tasks and their distances to the worker
+		std::map<float, std::shared_ptr<Storage>> mStorage;
+
+		// cycle over all storage locations
+		for (auto it = m_vStorage.begin(); it != m_vStorage.end();)
 		{
+			if ((pStorage = (*it).lock()) &&
+				pStorage)
+			{
+				// get the distance to the worker
+				float dist = pResource->getDistance(pStorage->getCentrePos());
+				// add it to the map
+				mStorage.insert({ dist, pStorage });
+				++it;
+			}
+			else
+			{
+				// no storage location here, remove it
+				m_vStorage.erase(it);
+			}
+		}
+
+		std::shared_ptr<StorageBin> pBin;
+		// find the cloest storage location which the resource can be stored in
+		for (auto it = mStorage.begin(); it != mStorage.end(); ++it)
+		{
+			pStorage = (*it).second;
 			pBin = pStorage->available();
 			if (pBin &&
 				pBin->reserve())
@@ -172,8 +193,9 @@ bool Map::dropResource(std::shared_ptr<Resource> pResource)
 			}
 		}
 	}
+	// failed to allocate resource to a storage location
 	m_vResourcesPending.push_back(pResource);
-	return true;
+	return false;
 }
 
 bool Map::addStorage(std::shared_ptr<Storage> pStorage)

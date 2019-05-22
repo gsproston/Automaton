@@ -51,7 +51,7 @@ bool Store::tick(const sf::Time elapsedTime, Worker& rWorker)
 	{
 		// cannot find a path, drop the resource
 		rWorker.dropResrouce();
-		m_rMap.dropResource(pResource);
+		m_rMap.storeResource(pResource);
 		return true;
 	}
 	// otherwise, move to the workplace
