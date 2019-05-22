@@ -25,7 +25,7 @@ public:
 	bool assignTask(std::unique_ptr<Task> pTask);
 
 	bool addResource(std::shared_ptr<Resource> pResource);
-	bool storeResource(std::shared_ptr<Resource> pResource);
+	bool assignResource(std::shared_ptr<Resource> pResource);
 	bool removeStructure(Structure& rStructure);
 
 	// pathfinding
@@ -50,6 +50,7 @@ private:
 	bool addWorker(std::unique_ptr<Worker> pWorker);
 	bool addWorkplace(std::shared_ptr<Workplace> pWorkplace);
 
+	bool assignStorage(const Storage& rStorage);
 	bool assignWorker(std::unique_ptr<Worker> pWorker);
 
 	// pathfinding

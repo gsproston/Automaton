@@ -28,7 +28,7 @@ bool PickUp::tick(const sf::Time elapsedTime, Worker& rWorker)
 	if (!pMoveTask->validate(rWorker))
 	{
 		// cannot find a path, have the map drop the resource
-		m_rMap.storeResource(pResource);
+		m_rMap.assignResource(pResource);
 		return true;
 	}
 	rWorker.addTaskFront(std::move(pMoveTask));

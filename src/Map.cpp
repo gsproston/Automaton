@@ -42,7 +42,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 100)
+	while (count < 10)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -53,7 +53,7 @@ Map::Map()
 
 	// init the stockpiles
 	count = 0;
-	while (count < 5)
+	while (count < 1)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -64,13 +64,25 @@ Map::Map()
 
 	// init the workplaces
 	count = 0;
-	while (count < 200)
+	while (count < 0)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
 		std::shared_ptr<Tree> tmpTree(new Tree(*this, sf::Vector2i(i, j)));
 		if (addWorkplace(std::move(tmpTree)))
 			++count;
+	}
+
+	// add resources
+	count = 0;
+	while (count < 17)
+	{
+		int i = rand() % WINDOW_WIDTH;
+		int j = rand() % WINDOW_HEIGHT;
+		std::shared_ptr<Resource> tmpResource(new Resource(sf::Vector2f((float)i, (float)j), 
+			sf::Color::Blue, Resource::wood));
+		addResource(std::move(tmpResource));
+		++count;
 	}
 }
 
@@ -144,11 +156,11 @@ bool Map::addResource(std::shared_ptr<Resource> pResource)
 	if (!pResource)
 		return false;
 	m_vResources.push_back(pResource);
-	storeResource(pResource);
+	assignResource(pResource);
 	return true;
 }
 
-bool Map::storeResource(std::shared_ptr<Resource> pResource)
+bool Map::assignResource(std::shared_ptr<Resource> pResource)
 {
 	if (!pResource)
 		return false;
@@ -156,7 +168,7 @@ bool Map::storeResource(std::shared_ptr<Resource> pResource)
 	if (!m_vStorage.empty())
 	{
 		std::shared_ptr<Storage> pStorage;
-		// ordered map of tasks and their distances to the worker
+		// ordered map of storage locations and their distance to the resource
 		std::map<float, std::shared_ptr<Storage>> mStorage;
 
 		// cycle over all storage locations
@@ -165,7 +177,7 @@ bool Map::storeResource(std::shared_ptr<Resource> pResource)
 			if ((pStorage = (*it).lock()) &&
 				pStorage)
 			{
-				// get the distance to the worker
+				// get the distance to the resource
 				float dist = pResource->getDistance(pStorage->getCentrePos());
 				// add it to the map
 				mStorage.insert({ dist, pStorage });
@@ -182,6 +194,7 @@ bool Map::storeResource(std::shared_ptr<Resource> pResource)
 		// find the cloest storage location which the resource can be stored in
 		for (auto it = mStorage.begin(); it != mStorage.end(); ++it)
 		{
+			// TODO validate
 			pStorage = (*it).second;
 			pBin = pStorage->available();
 			if (pBin &&
@@ -200,12 +213,61 @@ bool Map::storeResource(std::shared_ptr<Resource> pResource)
 
 bool Map::addStorage(std::shared_ptr<Storage> pStorage)
 {
-	// TODO look for pending resources
 	if (addStructure(pStorage))
 	{
 		m_vStorage.push_back(pStorage);
+		assignStorage(*pStorage);
 		return true;
 	}
+	return false;
+}
+
+// called when a storage structure is added
+// or if a previously full storage structure becomes available
+bool Map::assignStorage(const Storage& rStorage)
+{
+	// get the free storage bin
+	std::shared_ptr<StorageBin> pBin = rStorage.available();
+	if (!pBin)
+		// couldn't find a free bin
+		return false;
+
+	if (!m_vResourcesPending.empty())
+	{
+		std::shared_ptr<Resource> pResource;
+		// ordered map of resources and their distance to the storage location
+		std::map<float, std::shared_ptr<Resource>> mResources;
+
+		// cycle over all resources
+		for (auto it = m_vResourcesPending.begin(); it != m_vResourcesPending.end();)
+		{
+			if ((pResource = (*it).lock()) &&
+				pResource)
+			{
+				// get the distance to the resource
+				float dist = pResource->getDistance(rStorage.getCentrePos());
+				// add it to the map
+				mResources.insert({ dist, pResource });
+				++it;
+			}
+			else
+			{
+				// no resource here, remove it
+				m_vResourcesPending.erase(it);
+			}
+		}
+
+		// find the cloest resource which the storage location can store
+		for (auto it = mResources.begin(); it != mResources.end(); ++it)
+		{
+			// TODO validate
+			pResource = (*it).second;
+			std::unique_ptr<Store> pStore(new Store(*this, pResource, pBin));
+			assignTask(std::move(pStore));
+			return true;
+		}
+	}
+	// failed to allocate a resource to the storage location
 	return false;
 }
 
