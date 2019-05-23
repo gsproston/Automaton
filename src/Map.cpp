@@ -42,7 +42,7 @@ Map::Map()
 
 	// init the workers
 	int count = 0;
-	while (count < 10)
+	while (count < 100)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -53,7 +53,7 @@ Map::Map()
 
 	// init the stockpiles
 	count = 0;
-	while (count < 1)
+	while (count < 5)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -64,7 +64,7 @@ Map::Map()
 
 	// init the workplaces
 	count = 0;
-	while (count < 0)
+	while (count < 200)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -75,7 +75,7 @@ Map::Map()
 
 	// add resources
 	count = 0;
-	while (count < 17)
+	while (count < 0)
 	{
 		int i = rand() % WINDOW_WIDTH;
 		int j = rand() % WINDOW_HEIGHT;
@@ -450,17 +450,25 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 	// set of explored nodes
 	std::unordered_set<Tile*> sClosed;
 	// set of nodes to be explored
-	std::unordered_set<Tile*> sOpen = { pSourceTile };
+	std::unordered_set<Tile*> sOpen;
 
 	// nodes and their previous nodes
 	std::unordered_map<Tile*, Tile*> umapCameFrom;
 
 	// cost of going from the start node to this node
 	std::unordered_map<Tile*, float> umapGScore;
-	umapGScore.insert({ pSourceTile, 0.f });
 	// estimated cost of getting to the goal
 	std::unordered_map<Tile*, float> umapFScore;
-	umapFScore.insert({ pSourceTile, getHeuristic(vfSource, pSinkTile->getCentrePos()) });
+
+	std::vector<Tile*> vTiles = getNeighbouringNodes(pSourceTile->getTilePos());
+	vTiles.push_back(pSourceTile);
+	for (auto it = vTiles.begin(); it != vTiles.end(); ++it)
+	{
+		umapGScore.insert({ *it, utils::getDistance((*it)->getCentrePos(), vfSource) });
+		umapFScore.insert({ *it, utils::getDistance((*it)->getCentrePos(), vfSource) +
+			getHeuristic((*it)->getCentrePos(), pSinkTile->getCentrePos()) });
+		sOpen.insert(*it);
+	}
 
 	while (!sOpen.empty())
 	{
@@ -507,10 +515,7 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 		sOpen.erase(openIt);
 		sClosed.insert(pCurrentTile);
 
-		std::vector<Tile*> vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
-		if (pCurrentTile == pSourceTile &&
-			pCurrentTile->getSpeedMod() > 0)
-			vTiles.push_back(pCurrentTile);
+		vTiles = getNeighbouringNodes(pCurrentTile->getTilePos());
 		for (auto it = vTiles.begin(); it != vTiles.end(); ++it)
 		{
 			// ignore evaluated nodes
