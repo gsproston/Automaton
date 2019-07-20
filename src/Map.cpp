@@ -21,10 +21,10 @@ Map::Map()
 
 	// init the m_vTiles
 	std::vector<std::unique_ptr<Tile>> vTmp;
-	for (int i = 0; i <= WINDOW_WIDTH * 3 / TILE_SIZE; ++i)
+	for (int i = 0; i <= WORLD_WIDTH; ++i)
 	{
 		vTmp.clear();
-		for (int j = 0; j <= WINDOW_HEIGHT * 3 / TILE_SIZE; ++j)
+		for (int j = 0; j <= WORLD_HEIGHT; ++j)
 		{
 			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
 			vTmp.push_back(std::move(tmpTile));
@@ -33,9 +33,9 @@ Map::Map()
 	}
 
 	// put in roads
-	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
+	for (int i = 0; i <= WORLD_WIDTH; ++i)
 	{
-		const static int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		const static int j = rand() % (WORLD_HEIGHT);
 		std::shared_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, j)));
 		addStructure(std::move(tmpRoad));
 	}
@@ -44,8 +44,8 @@ Map::Map()
 	int count = 0;
 	while (count < 100)
 	{
-		int i = rand() % WINDOW_WIDTH;
-		int j = rand() % WINDOW_HEIGHT;
+		int i = rand() % WORLD_WIDTH * TILE_SIZE;
+		int j = rand() % WORLD_HEIGHT * TILE_SIZE;
 		std::unique_ptr<Worker> tmpWorker(new Worker(sf::Vector2f((float)i, (float)j)));
 		addWorker(std::move(tmpWorker));
 		++count;
@@ -55,8 +55,8 @@ Map::Map()
 	count = 0;
 	while (count < 13)
 	{
-		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
-		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		int i = rand() % WORLD_WIDTH;
+		int j = rand() % WORLD_HEIGHT;
 		std::shared_ptr<Stockpile> tmpStock(new Stockpile(sf::Vector2i(i, j)));
 		if (addStorage(std::move(tmpStock)))
 			++count;
@@ -66,8 +66,8 @@ Map::Map()
 	count = 0;
 	while (count < 200)
 	{
-		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
-		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
+		int i = rand() % WORLD_WIDTH;
+		int j = rand() % WORLD_HEIGHT;
 		std::shared_ptr<Tree> tmpTree(new Tree(*this, sf::Vector2i(i, j)));
 		if (addWorkplace(std::move(tmpTree)))
 			++count;
@@ -77,8 +77,8 @@ Map::Map()
 	count = 0;
 	while (count < 0)
 	{
-		int i = rand() % WINDOW_WIDTH;
-		int j = rand() % WINDOW_HEIGHT;
+		int i = rand() % WINDOW_WIDTH * TILE_SIZE;
+		int j = rand() % WINDOW_HEIGHT * TILE_SIZE;
 		std::shared_ptr<Resource> tmpResource(new Resource(sf::Vector2f((float)i, (float)j), 
 			sf::Color::Blue, Resource::wood));
 		addResource(std::move(tmpResource));
@@ -444,6 +444,9 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 {
 	Tile* pSourceTile = getTile(vfSource);
 	Tile* pSinkTile = getTile(vfSink);
+	if (pSourceTile == nullptr ||
+		pSinkTile == nullptr)
+		return {};
 
 	// set of explored nodes
 	std::unordered_set<Tile*> sClosed;

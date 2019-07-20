@@ -22,8 +22,8 @@ int main()
 
 	while (window.isOpen())
 	{
-		static float fOffsetX = 0.f;
-		static float fOffsetY = 0.f;
+		static float fOffsetX = -(WORLD_WIDTH * TILE_SIZE / 2.f);
+		static float fOffsetY = -(WORLD_HEIGHT * TILE_SIZE / 2.f);
 
 		sf::Event event;
 		while (window.pollEvent(event))
