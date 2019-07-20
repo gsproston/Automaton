@@ -19,8 +19,8 @@ public:
 
 	void tick(const sf::Time elapsedTime);
 
-	void addQuadVertices(std::vector<sf::Vertex>& rvVertices) const;
-	void addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const;
+	void addVertices(std::vector<sf::Vertex>& rvTriangleVertices,
+		std::vector<sf::Vertex>& rvQuadVertices) const;
 
 	bool assignTask(std::unique_ptr<Task> pTask);
 

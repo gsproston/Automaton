@@ -17,14 +17,14 @@
 
 Map::Map()
 {
-	//srand((unsigned int) time(0));
+	srand((unsigned int) time(0));
 
 	// init the m_vTiles
 	std::vector<std::unique_ptr<Tile>> vTmp;
-	for (int i = 0; i <= WINDOW_WIDTH / TILE_SIZE; ++i)
+	for (int i = 0; i <= WINDOW_WIDTH * 3 / TILE_SIZE; ++i)
 	{
 		vTmp.clear();
-		for (int j = 0; j <= WINDOW_HEIGHT / TILE_SIZE; ++j)
+		for (int j = 0; j <= WINDOW_HEIGHT * 3 / TILE_SIZE; ++j)
 		{
 			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
 			vTmp.push_back(std::move(tmpTile));
@@ -53,7 +53,7 @@ Map::Map()
 
 	// init the stockpiles
 	count = 0;
-	while (count < 5)
+	while (count < 13)
 	{
 		int i = rand() % (WINDOW_WIDTH / TILE_SIZE);
 		int j = rand() % (WINDOW_HEIGHT / TILE_SIZE);
@@ -114,40 +114,38 @@ void Map::tick(const sf::Time elapsedTime)
 }
 
 
-void Map::addQuadVertices(std::vector<sf::Vertex>& rvVertices) const
+void Map::addVertices(std::vector<sf::Vertex>& rvTriangleVertices,
+	std::vector<sf::Vertex>& rvQuadVertices) const
 {
+	// add worker vertices
+	for (uint32_t i = 0; i < m_vWorkersBusy.size(); ++i)
+	{
+		m_vWorkersBusy[i]->addVertices(rvTriangleVertices);
+	}
+	for (uint32_t i = 0; i < m_vWorkersFree.size(); ++i)
+	{
+		m_vWorkersFree[i]->addVertices(rvTriangleVertices);
+	}
+
+	// add resources
+	for (uint32_t i = 0; i < m_vResources.size(); ++i)
+	{
+		m_vResources[i]->addVertices(rvTriangleVertices);
+	}
+
 	// add tile vertices
 	for (uint32_t i = 0; i < m_vTiles.size(); ++i)
 	{
 		for (uint32_t j = 0; j < m_vTiles[i].size(); ++j)
 		{
-			m_vTiles[i][j]->addVertices(rvVertices);
+			m_vTiles[i][j]->addVertices(rvQuadVertices);
 		}
 	}
 
 	// add structure vertices
 	for (uint32_t i = 0; i < m_vStructures.size(); ++i)
 	{
-		m_vStructures[i]->addVertices(rvVertices);
-	}
-}
-
-void Map::addTriangleVertices(std::vector<sf::Vertex>& rvVertices) const
-{
-	// add worker vertices
-	for (uint32_t i = 0; i < m_vWorkersBusy.size(); ++i)
-	{
-		m_vWorkersBusy[i]->addVertices(rvVertices);
-	}
-	for (uint32_t i = 0; i < m_vWorkersFree.size(); ++i)
-	{
-		m_vWorkersFree[i]->addVertices(rvVertices);
-	}
-
-	// add resources
-	for (uint32_t i = 0; i < m_vResources.size(); ++i)
-	{
-		m_vResources[i]->addVertices(rvVertices);
+		m_vStructures[i]->addVertices(rvQuadVertices);
 	}
 }
 

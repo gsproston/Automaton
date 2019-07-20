@@ -15,7 +15,6 @@ int main()
 	texture.loadFromFile("images/tileMap.png");
 	sf::RenderStates states;
 	states.texture = &texture;
-	std::vector<sf::Vertex> vVertices;
 
 	window.setFramerateLimit(60);
 	sf::Clock clock;
@@ -23,24 +22,50 @@ int main()
 
 	while (window.isOpen())
 	{
+		static float fOffsetX = 0.f;
+		static float fOffsetY = 0.f;
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::Escape)
+					window.close();
+			}
 		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			fOffsetX++;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			fOffsetX--;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			fOffsetY++;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			fOffsetY--;
 
 		window.clear();
 
-		// draw all quads
-		map.addQuadVertices(vVertices);
-		window.draw(vVertices.data(), vVertices.size(), sf::PrimitiveType::Quads, states);
-		vVertices.clear();
+		std::vector<sf::Vertex> vTriangleVertices;
+		std::vector<sf::Vertex> vQuadVertices;
+		map.addVertices(vTriangleVertices, vQuadVertices);
 
+		for (size_t i = 0; i < vTriangleVertices.size(); ++i)
+		{
+			vTriangleVertices[i].position += sf::Vector2f(fOffsetX, fOffsetY);
+		}
+		for (size_t i = 0; i < vQuadVertices.size(); ++i)
+		{
+			vQuadVertices[i].position += sf::Vector2f(fOffsetX, fOffsetY);
+		}
+
+		// draw all quads
+		window.draw(vQuadVertices.data(), vQuadVertices.size(), sf::PrimitiveType::Quads, states);
 		// draw all triangles
-		map.addTriangleVertices(vVertices);
-		window.draw(vVertices.data(), vVertices.size(), sf::PrimitiveType::Triangles);
-		vVertices.clear();
+		window.draw(vTriangleVertices.data(), vTriangleVertices.size(), sf::PrimitiveType::Triangles);
 
 		window.display();
 
