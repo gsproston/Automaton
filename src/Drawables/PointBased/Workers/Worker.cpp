@@ -1,6 +1,6 @@
 #include "Worker.h"
 
-#include "Map.h"
+#include "Map/Map.h"
 #include "Utils/Utils.h"
 
 Worker::Worker(const sf::Vector2f vfMapPos):

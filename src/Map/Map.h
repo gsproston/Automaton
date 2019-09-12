@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -17,6 +18,8 @@ class Map
 public:
 	Map();
 
+	void loadChunk(const sf::Vector2i& viChunk);
+
 	void tick(const sf::Time elapsedTime);
 
 	void addVertices(std::vector<sf::Vertex>& rvTriangleVertices,
@@ -29,12 +32,14 @@ public:
 	bool removeStructure(Structure& rStructure);
 
 	// pathfinding
-	std::vector<Tile*> getPath(const sf::Vector2f vfSource,
+	std::vector<std::shared_ptr<Tile>> getPath(const sf::Vector2f vfSource,
 		const sf::Vector2f vfSink) const;
 
 private:
+	sf::Vector2i m_viCurrentChunk;
 	std::vector<std::shared_ptr<Structure>> m_vStructures;
-	std::vector<std::vector<std::unique_ptr<Tile>>> m_vTiles;
+	std::array<std::array<std::array<std::array<std::shared_ptr<Tile>, CHUNK_HEIGHT>, CHUNK_WIDTH>, 
+		1 + CHUNK_EXTRA_HEIGHT * 2>, 1 + CHUNK_EXTRA_WIDTH * 2> m_vTiles;
 
 	std::vector<std::shared_ptr<Resource>> m_vResources;
 	std::vector<std::weak_ptr<Resource>> m_vResourcesPending;
@@ -55,7 +60,7 @@ private:
 
 	// pathfinding
 	float getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) const;
-	std::vector<Tile*> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
-	Tile* getTile(const sf::Vector2f vfMapPos) const;
-	Tile* getTile(const sf::Vector2i viTilePos) const;
+	std::vector<std::shared_ptr<Tile>> getNeighbouringNodes(const sf::Vector2i viTilePos) const;
+	std::shared_ptr<Tile> getTile(const sf::Vector2f vfMapPos) const;
+	std::shared_ptr<Tile> getTile(const sf::Vector2i viTilePos) const;
 };

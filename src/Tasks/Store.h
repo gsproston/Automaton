@@ -4,7 +4,7 @@
 
 #include "Drawables/PointBased/Resources/Resource.h"
 #include "Drawables/TileBased/Structures/Storage/Storage.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 class Store : public Task
 {

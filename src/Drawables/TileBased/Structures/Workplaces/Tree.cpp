@@ -2,7 +2,7 @@
 
 #include "Constants.h"
 #include "Drawables/PointBased/Resources/Wood.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 Tree::Tree(Map& rMap,
 	const sf::Vector2i viTilePos) :

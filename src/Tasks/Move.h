@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Map.h"
+#include "Map/Map.h"
 #include "Task.h"
 
 class Move : public Task
@@ -16,6 +16,6 @@ private:
 	const Map& m_rMap;
 
 	std::vector<Node> m_vNodes;
-	std::vector<Tile*> m_vPath;
+	std::vector<std::shared_ptr<Tile>> m_vPath;
 	const sf::Vector2f m_vfDestination;
 };

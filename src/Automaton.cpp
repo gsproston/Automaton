@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Constants.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 int main()
 {
@@ -20,11 +20,11 @@ int main()
 	sf::Clock clock;
 	sf::Time elapsedTime = clock.restart();
 
+	float fOffsetX = 0.f;
+	float fOffsetY = 0.f;
+
 	while (window.isOpen())
 	{
-		static float fOffsetX = -(WORLD_WIDTH * TILE_SIZE / 2.f);
-		static float fOffsetY = -(WORLD_HEIGHT * TILE_SIZE / 2.f);
-
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -38,14 +38,26 @@ int main()
 			}
 		}
 
+		int iOldChunkX = (int) floor(fOffsetX / (CHUNK_WIDTH * TILE_SIZE));
+		int iOldChunkY = (int) floor(fOffsetY / (CHUNK_HEIGHT * TILE_SIZE));
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-			fOffsetX++;
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			fOffsetX--;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			fOffsetX++;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-			fOffsetY++;
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 			fOffsetY--;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			fOffsetY++;
+
+		int iNewChunkX = (int) floor(fOffsetX / (CHUNK_WIDTH * TILE_SIZE));
+		int iNewChunkY = (int) floor(fOffsetY / (CHUNK_HEIGHT * TILE_SIZE));
+
+		if (iNewChunkX != iOldChunkX || iNewChunkY != iOldChunkY)
+		{
+			printf("New chunk: %d,%d\n", iNewChunkX, iNewChunkY);
+			map.loadChunk({ iNewChunkX, iNewChunkY });
+		}
 
 		window.clear();
 
@@ -55,11 +67,11 @@ int main()
 
 		for (size_t i = 0; i < vTriangleVertices.size(); ++i)
 		{
-			vTriangleVertices[i].position += sf::Vector2f(fOffsetX, fOffsetY);
+			vTriangleVertices[i].position += sf::Vector2f(-fOffsetX, -fOffsetY);
 		}
 		for (size_t i = 0; i < vQuadVertices.size(); ++i)
 		{
-			vQuadVertices[i].position += sf::Vector2f(fOffsetX, fOffsetY);
+			vQuadVertices[i].position += sf::Vector2f(-fOffsetX, -fOffsetY);
 		}
 
 		// draw all quads

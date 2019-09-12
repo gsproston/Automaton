@@ -15,27 +15,17 @@
 #include "Tasks/Store.h"
 #include "Tasks/Work.h"
 
-Map::Map()
+Map::Map():
+	m_viCurrentChunk({0,0})
 {
 	srand((unsigned int) time(0));
 
-	// init the m_vTiles
-	std::vector<std::unique_ptr<Tile>> vTmp;
-	for (int i = 0; i <= WORLD_WIDTH; ++i)
-	{
-		vTmp.clear();
-		for (int j = 0; j <= WORLD_HEIGHT; ++j)
-		{
-			std::unique_ptr<Tile> tmpTile(new Grass(sf::Vector2i(i, j)));
-			vTmp.push_back(std::move(tmpTile));
-		}
-		m_vTiles.push_back(std::move(vTmp));
-	}
+	loadChunk({ 0, 0 });
 
 	// put in roads
-	for (int i = 0; i <= WORLD_WIDTH; ++i)
+	for (int i = 0; i <= WORLD_WIDTH_RADIUS * 2; ++i)
 	{
-		const static int j = rand() % (WORLD_HEIGHT);
+		const static int j = rand() % (CHUNK_HEIGHT);
 		std::shared_ptr<Road> tmpRoad(new Road(sf::Vector2i(i, j)));
 		addStructure(std::move(tmpRoad));
 	}
@@ -44,8 +34,8 @@ Map::Map()
 	int count = 0;
 	while (count < 100)
 	{
-		int i = rand() % WORLD_WIDTH * TILE_SIZE;
-		int j = rand() % WORLD_HEIGHT * TILE_SIZE;
+		int i = rand() % CHUNK_WIDTH * TILE_SIZE;
+		int j = rand() % CHUNK_HEIGHT * TILE_SIZE;
 		std::unique_ptr<Worker> tmpWorker(new Worker(sf::Vector2f((float)i, (float)j)));
 		addWorker(std::move(tmpWorker));
 		++count;
@@ -53,10 +43,10 @@ Map::Map()
 
 	// init the stockpiles
 	count = 0;
-	while (count < 13)
+	while (count < 10)
 	{
-		int i = rand() % WORLD_WIDTH;
-		int j = rand() % WORLD_HEIGHT;
+		int i = rand() % CHUNK_WIDTH;
+		int j = rand() % CHUNK_HEIGHT;
 		std::shared_ptr<Stockpile> tmpStock(new Stockpile(sf::Vector2i(i, j)));
 		if (addStorage(std::move(tmpStock)))
 			++count;
@@ -66,8 +56,8 @@ Map::Map()
 	count = 0;
 	while (count < 200)
 	{
-		int i = rand() % WORLD_WIDTH;
-		int j = rand() % WORLD_HEIGHT;
+		int i = rand() % CHUNK_WIDTH;
+		int j = rand() % CHUNK_HEIGHT;
 		std::shared_ptr<Tree> tmpTree(new Tree(*this, sf::Vector2i(i, j)));
 		if (addWorkplace(std::move(tmpTree)))
 			++count;
@@ -84,6 +74,79 @@ Map::Map()
 		addResource(std::move(tmpResource));
 		++count;
 	}
+}
+
+// loads the current chunk and its surrounding areas if applicable
+void Map::loadChunk(const sf::Vector2i& viChunk)
+{
+	static bool bFirstLoad = true;
+
+	// remove only some chunks
+	sf::Vector2i viChunkDiff = bFirstLoad ? sf::Vector2i(0, 0) : viChunk - m_viCurrentChunk;
+
+	for (int l = -CHUNK_EXTRA_WIDTH; l <= CHUNK_EXTRA_WIDTH; ++l)
+	{
+		const int lindex = viChunkDiff.x >= 0 ? l + CHUNK_EXTRA_WIDTH : CHUNK_EXTRA_WIDTH - l;
+		if ((viChunk.x + lindex - CHUNK_EXTRA_WIDTH) * CHUNK_WIDTH > WORLD_WIDTH_RADIUS ||
+			(viChunk.x + lindex - CHUNK_EXTRA_WIDTH + 1) * CHUNK_WIDTH < -WORLD_WIDTH_RADIUS)
+		{
+			m_vTiles[lindex] = {};
+			continue;
+		}
+
+		if (!bFirstLoad && 
+			(viChunkDiff.x > 0 && lindex + viChunkDiff.x <= CHUNK_EXTRA_WIDTH * 2 ||	// moving right
+			viChunkDiff.x < 0 && lindex + viChunkDiff.x >= 0))							// moving left
+		{
+			m_vTiles[lindex] = std::move(m_vTiles[lindex + viChunkDiff.x]);
+		}
+
+		for (int k = -CHUNK_EXTRA_HEIGHT; k <= CHUNK_EXTRA_HEIGHT; ++k)
+		{
+			const int kindex = viChunkDiff.y >= 0 ? k + CHUNK_EXTRA_HEIGHT : CHUNK_EXTRA_HEIGHT - k;
+			if ((viChunk.y + kindex - CHUNK_EXTRA_HEIGHT) * CHUNK_HEIGHT > WORLD_HEIGHT_RADIUS ||
+				(viChunk.y + kindex - CHUNK_EXTRA_HEIGHT + 1) * CHUNK_HEIGHT < -WORLD_HEIGHT_RADIUS)
+			{
+				m_vTiles[lindex][kindex] = {};
+				continue;
+			}
+
+			if (!bFirstLoad && 
+				(viChunkDiff.y > 0 && kindex + viChunkDiff.y <= CHUNK_EXTRA_HEIGHT * 2 ||	// moving down
+				viChunkDiff.y < 0 && kindex + viChunkDiff.y >= 0))							// moving up
+			{
+				m_vTiles[lindex][kindex] = std::move(m_vTiles[lindex][kindex + viChunkDiff.y]);
+			}
+
+			for (int j = 0; j < CHUNK_WIDTH; ++j)
+			{
+				if (abs((viChunk.x + lindex - CHUNK_EXTRA_WIDTH) * CHUNK_WIDTH + j) >= WORLD_WIDTH_RADIUS)
+				{
+					m_vTiles[lindex][kindex][j] = {};
+					continue;
+				}
+
+				for (int i = 0; i < CHUNK_HEIGHT; ++i)
+				{
+					if (abs((viChunk.y + kindex - CHUNK_EXTRA_HEIGHT) * CHUNK_HEIGHT + i) >= WORLD_HEIGHT_RADIUS)
+					{
+						m_vTiles[lindex][kindex][j][i] = nullptr;
+					}
+					else if (m_vTiles[lindex][kindex][j][i] == nullptr)
+					{
+						m_vTiles[lindex][kindex][j][i] =
+							std::shared_ptr<Tile>(new Grass(sf::Vector2i(
+							(viChunk.x + lindex - CHUNK_EXTRA_WIDTH) * CHUNK_WIDTH + j, 
+								(viChunk.y + kindex - CHUNK_EXTRA_HEIGHT) * CHUNK_HEIGHT + i)));
+					}
+				}
+			}
+		}
+	}
+
+	bFirstLoad = false;
+
+	m_viCurrentChunk = viChunk;
 }
 
 void Map::tick(const sf::Time elapsedTime)
@@ -134,11 +197,18 @@ void Map::addVertices(std::vector<sf::Vertex>& rvTriangleVertices,
 	}
 
 	// add tile vertices
-	for (uint32_t i = 0; i < m_vTiles.size(); ++i)
+	for (int i = 0; i < CHUNK_HEIGHT; ++i)
 	{
-		for (uint32_t j = 0; j < m_vTiles[i].size(); ++j)
+		for (int j = 0; j < CHUNK_WIDTH; ++j)
 		{
-			m_vTiles[i][j]->addVertices(rvQuadVertices);
+			for (int k = -CHUNK_EXTRA_HEIGHT; k <= CHUNK_EXTRA_HEIGHT; ++k)
+			{
+				for (int l = -CHUNK_EXTRA_WIDTH; l <= CHUNK_EXTRA_WIDTH; ++l)
+				{
+					if (m_vTiles[l + CHUNK_EXTRA_WIDTH][k + CHUNK_EXTRA_HEIGHT][j][i] != nullptr)
+						m_vTiles[l + CHUNK_EXTRA_WIDTH][k + CHUNK_EXTRA_HEIGHT][j][i]->addVertices(rvQuadVertices);
+				}
+			}
 		}
 	}
 
@@ -275,7 +345,7 @@ bool Map::addStructure(std::shared_ptr<Structure> pStructure)
 		return false;
 
 	// non-owning pointer guaranteed to be alive
-	Tile* pCurrentTile = getTile(pStructure->getTilePos());
+	std::shared_ptr<Tile> pCurrentTile = getTile(pStructure->getTilePos());
 	if (pCurrentTile &&
 		pCurrentTile->setStructure(pStructure))
 	{
@@ -439,29 +509,29 @@ float Map::getHeuristic(const sf::Vector2f vfSource, const sf::Vector2f vfDest) 
 
 // returns a vector of coordinates to follow to get from source to sink
 // if no path is found, returns an empty vector
-std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
+std::vector<std::shared_ptr<Tile>> Map::getPath(const sf::Vector2f vfSource,
 	const sf::Vector2f vfSink) const
 {
-	Tile* pSourceTile = getTile(vfSource);
-	Tile* pSinkTile = getTile(vfSink);
+	std::shared_ptr<Tile> pSourceTile = getTile(vfSource);
+	std::shared_ptr<Tile> pSinkTile = getTile(vfSink);
 	if (pSourceTile == nullptr ||
 		pSinkTile == nullptr)
 		return {};
 
 	// set of explored nodes
-	std::unordered_set<Tile*> sClosed;
+	std::unordered_set<std::shared_ptr<Tile>> sClosed;
 	// set of nodes to be explored
-	std::unordered_set<Tile*> sOpen;
+	std::unordered_set<std::shared_ptr<Tile>> sOpen;
 
 	// nodes and their previous nodes
-	std::unordered_map<Tile*, Tile*> umapCameFrom;
+	std::unordered_map<std::shared_ptr<Tile>, std::shared_ptr<Tile>> umapCameFrom;
 
 	// cost of going from the start node to this node
-	std::unordered_map<Tile*, float> umapGScore;
+	std::unordered_map<std::shared_ptr<Tile>, float> umapGScore;
 	// estimated cost of getting to the goal
-	std::unordered_map<Tile*, float> umapFScore;
+	std::unordered_map<std::shared_ptr<Tile>, float> umapFScore;
 
-	std::vector<Tile*> vTiles = getNeighbouringNodes(pSourceTile->getTilePos());
+	std::vector<std::shared_ptr<Tile>> vTiles = getNeighbouringNodes(pSourceTile->getTilePos());
 	vTiles.push_back(pSourceTile);
 	for (auto it = vTiles.begin(); it != vTiles.end(); ++it)
 	{
@@ -490,7 +560,7 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 			}
 		}
 
-		Tile* pCurrentTile = *openIt;
+		std::shared_ptr<Tile> pCurrentTile = *openIt;
 		if (!pCurrentTile)
 			continue;
 
@@ -500,7 +570,7 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 			(viDiff.y == 0 && abs(viDiff.x) == 1) ||
 			(viDiff.x == 0 && viDiff.y == 0))
 		{
-			std::vector<Tile*> vvfPath = { pSinkTile };
+			std::vector<std::shared_ptr<Tile>> vvfPath = { pSinkTile };
 			if (pSinkTile != pCurrentTile &&
 				pSourceTile != pCurrentTile)
 				vvfPath.push_back(pCurrentTile);
@@ -551,10 +621,10 @@ std::vector<Tile*> Map::getPath(const sf::Vector2f vfSource,
 }
 
 // returns a vector of all neighbouring tiles
-std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
+std::vector<std::shared_ptr<Tile>> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 {
-	std::vector<Tile*> vTiles;
-	Tile* pTile;
+	std::vector<std::shared_ptr<Tile>> vTiles;
+	std::shared_ptr<Tile> pTile;
 
 	for (int8_t i = -1; i <= 1; ++i)
 	{
@@ -562,8 +632,8 @@ std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 		{
 			// exclude the given tile
 			// and diagonal tiles
-			if (i == 0 && j == 0 ||
-				i != 0 && j != 0)
+			if ((i == 0 && j == 0) ||
+				(i != 0 && j != 0))
 				continue;
 
 			pTile = getTile(viTilePos + sf::Vector2i(i, j));
@@ -575,17 +645,28 @@ std::vector<Tile*> Map::getNeighbouringNodes(const sf::Vector2i viTilePos) const
 	return vTiles;
 }
 
-Tile* Map::getTile(const sf::Vector2f vfMapPos) const
+std::shared_ptr<Tile> Map::getTile(const sf::Vector2f vfMapPos) const
 {
 	return getTile(utils::convertMapPosToTilePos(vfMapPos));
 }
 
-Tile* Map::getTile(const sf::Vector2i viTilePos) const
+std::shared_ptr<Tile> Map::getTile(const sf::Vector2i viTilePos) const
 {
-	if (viTilePos.x < m_vTiles.size() &&
-		viTilePos.y < m_vTiles[viTilePos.x].size())
-	{
-		return (m_vTiles[viTilePos.x][viTilePos.y]).get();
-	}
-	return nullptr;
+	// get the chunk first
+	int iChunkX = (int) floor((float) viTilePos.x / CHUNK_WIDTH);
+	int iChunkY = (int) floor((float) viTilePos.y / CHUNK_HEIGHT);
+	int iChunkXDiff = iChunkX - m_viCurrentChunk.x;
+	int iChunkYDiff = iChunkY - m_viCurrentChunk.y;
+	if (abs(iChunkXDiff) > CHUNK_EXTRA_WIDTH ||
+		abs(iChunkYDiff) > CHUNK_EXTRA_HEIGHT)
+		return nullptr;
+
+	int iTileX = viTilePos.x % CHUNK_WIDTH;
+	int iTileY = viTilePos.y % CHUNK_HEIGHT;
+	while (iTileX < 0)
+		iTileX = CHUNK_WIDTH + iTileX;
+	while (iTileY < 0)
+		iTileY = CHUNK_HEIGHT + iTileY;
+
+	return m_vTiles[iChunkXDiff + CHUNK_EXTRA_WIDTH][iChunkYDiff + CHUNK_EXTRA_HEIGHT][iTileX][iTileY];
 }

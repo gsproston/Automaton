@@ -3,7 +3,7 @@
 #include "Task.h"
 
 #include "Drawables/TileBased/Structures/Workplaces/Workplace.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 class Work : public Task
 {

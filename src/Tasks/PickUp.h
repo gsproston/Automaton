@@ -3,7 +3,7 @@
 #include "Task.h"
 
 #include "Drawables/PointBased/Resources/Resource.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 class PickUp : public Task
 {

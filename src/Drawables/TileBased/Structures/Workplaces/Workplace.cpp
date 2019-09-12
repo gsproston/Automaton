@@ -1,7 +1,7 @@
 #include "Workplace.h"
 
 #include "Drawables/PointBased/Workers/Worker.h"
-#include "Map.h"
+#include "Map/Map.h"
 #include "Utils/Utils.h"
 
 Workplace::Workplace(Map& rMap,
